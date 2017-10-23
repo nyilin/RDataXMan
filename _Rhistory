@@ -1,0 +1,512 @@
+#         collapse = ","),
+#   "_with variable list_summary.xlsx"
+# )
+file <- paste0(
+"research/",research.folder,"/request_output/summary_list.xlsx"
+)
+setting <- data.frame(
+Argument = c("inclusion criterion", "variable list", "dataLogic",
+"wkdir", "research.folder"),
+Specification = c(paste(inclusion.xls.file, collapse = ","),
+paste(variable.xls.file,collapse = ","),
+dataLogic, wkdir, research.folder),
+stringsAsFactors = FALSE
+)
+}
+write_to_file(table = setting, sheetName = "argument list", file = file,
+overwrite = overwrite)
+xlsx::write.xlsx(c_inclu$count_all, file = file, sheetName = "inclusion_count_overall",
+row.names = FALSE, append = TRUE, showNA = FALSE)
+if (!is.null(c_inclu$count_key)) {
+lapply(1:length(c_inclu$count_key), function(i) {
+# Do not need to check overwrite now
+write_to_file(table = c_inclu$count_key[[i]],
+file = file, sheetName = paste0("inclusion_count_", i))
+})
+}
+if (!is.null(var_info) & !is.null(var_info$var_summ)) {
+xlsx::write.xlsx(var_info$var_summ, file = file,
+sheetName = "variable_summary",
+row.names = FALSE, append = TRUE, showNA = FALSE)
+}else{
+warning(simpleWarning("No data extracted with inclusion criteria specified.\n"))
+}
+message(simpleMessage(
+paste("Summary statistics of", paste(inclusion.xls.file, collapse = ","),
+"saved into", file, "\n")
+))
+output$summary.stat <- file
+}
+output
+}
+research.folder <- check_input(research.folder)
+inclusion.xls.file <- check_input(inclusion.xls.file)
+variable.xls.file <- check_input(variable.xls.file)
+database <- check_input(database)
+dataLogic <- check_input(dataLogic)
+select.output <- check_input(select.output)
+username <- check_input(username)
+password <- check_input(password)
+conn_string <- check_input(conn_string)
+research.folder <- research.folder[1]
+if (is.na(research.folder)) {
+stop(simpleError(
+"Please specify a single research folder for this extraction."
+))
+}
+inclusion.xls.file <- unique(na.omit(as.character(inclusion.xls.file)))
+if (length(inclusion.xls.file) == 0) {
+stop(simpleError("Please specify inclusion criteria for this extraction."))
+}
+variable.xls.file <- unique(na.omit(as.character(variable.xls.file)))
+if ((length(inclusion.xls.file) > 1) | (length(variable.xls.file) > 1)) {
+if (is.na(dataLogic)) {
+tmp.multi.file <- read_excel(
+path = file.path("research", research.folder,
+"request_input/multiple_inclusion_specification.xls"),
+sheet = "specification"
+)
+tmp.multi <- tmp.multi.file[which(tmp.multi.file[, "Argument"] ==
+"data.logic"),
+"Specification"]
+if (is.na(tmp.multi)) {
+stop(simpleError("`dataLogic` is required when more than one inclusion criteria and/or variable list are specified."))
+}
+dataLogic <- tmp.multi
+} else {
+dataLogic <- tolower(dataLogic)
+if (!dataLogic %in% c("union", "intersection")) {
+stop(simpleError("`dataLogic` must be either `union` or `intersection`."))
+}
+}
+}
+if (!all(select.output %in% 1:4)) {
+stop(simpleError("`select.output` can only take values 1, 2, 3, and/or 4."))
+}
+if (!overwrite %in% c(TRUE, FALSE)) {
+stop(simpleError("Please specify either `TRUE` or `FALSE` for `overwrite`."))
+}
+setwd(wkdir)
+getwd()
+wkdir <- "/Volumes/dasa/DASA/RDataXMan Package/example/test_RDataXMan_XH_0619"
+setwd(wkdir)
+if (!dir.exists("research")) {
+stop(simpleError("Please create `research` folder in the working directory specified, and create a subfolder for this extraction within it."))
+}
+if (!dir.exists(file.path("research", research.folder))) {
+stop(paste("Please create a subfolder for this extraction in `research` folder."))
+}
+if (!dir.exists(file.path("research", research.folder, "request_input"))) {
+stop(simpleError(paste("Please create a `request_input` folder within the research folder, and copy annotated inclusion criteria and variable lists to this folder.")))
+}
+if (!dir.exists(file.path("research", research.folder, "request_output"))) {
+dir.create(file.path("research", research.folder, "request_output"))
+}
+research.folder = research.folder
+inclusion.xls.file = inclusion.xls.file
+data_logic = dataLogic
+overwrite = overwrite
+username=username
+password=password
+seq_along(inclusion.xls.file)
+i=1
+setting <- get_setting(research_folder = research.folder,
+file = inclusion.xls.file[i])
+library(xlsx)
+setting <- get_setting(research_folder = research.folder,
+file = inclusion.xls.file[i])
+database <- database_full(research.folder,setting$database,setting$data_type)
+research_folder = research.folder
+database = database[2]
+file = inclusion.xls.file[i]
+key_var = setting$key_var
+key_desc = setting$key_desc
+type = "inclusion"
+version_mode <- unlist(strsplit(file, split = ".", fixed = TRUE))
+is_short <- "short" %in% tolower(version_mode)
+is_short
+message(simpleMessage(
+if (type == "inclusion") {
+paste0(" ** Inclusion criteria '", file, "' ",
+"is in long version.\n")
+} else {
+paste0(" ** Variable list '", file, "' ",
+"is in long version.\n")
+}
+))
+template_folder <- paste(database,"_template",sep = "")
+if (!dir.exists(template_folder)) {
+stop(simpleError("Please use functions `genInclusion` and `genVariable` to generate inclusion criteria and variable lists before extracting data."))
+}
+research_folder = research_folder
+database
+file = file
+key_var = key_var
+key_var
+request <- check_long(research_folder = research_folder,
+database = database,
+request_file = file,
+template_file = file)
+request
+request <- as.data.frame(request)
+!(key_var %in% colnames(request))
+key <- extract_selection(selection = request[, "selection"],
+selection_symbol = "x", key_var = request[, key_var])
+key
+length(key) == 0
+warning(simpleWarning(
+paste("No", key_var, "satisfies inclusion criteria in '", file, "' selected accroding to selection column.\n
+Try to find logic in logic column to get information of inclusion criteria")
+))
+e
+warning(simpleWarning(
+paste("No", key_var, "satisfies inclusion criteria in '", file, "' selected accroding to selection column.
+Try to find logic in logic column to get information of inclusion criteria. \n")
+))
+warning(simpleWarning(
+paste("No", key_var, "satisfies inclusion criteria in '", file, "' selected accroding to selection column.\n Try to find logic in logic column to get information of inclusion criteria. \n")
+))
+selection = request[, "logic"]
+key_var = key_var
+request
+selection <- paste0((tolower(as.character(na.omit(selection)))))
+selection
+key.var <- key_var
+key.var
+key <- subset(request,subset = selection)
+key
+logic
+selection
+logic = request[, "logic"]
+key <- subset(request,subset = logic)
+logic
+logic <- paste0(as.character(na.omit(logic)))
+logic
+key <- subset(request,subset = logic)
+key <- subset(request,subset = DIAGNOSIS_CD<151)
+key
+sttm <- logic
+sttm
+deparse(sttm)
+sttm <- parse(text = sttm)
+sttm
+key <- subset(request,subset = sttm)
+logic
+logic <- DIAGNOSIS_CD<151
+logic <- "DIAGNOSIS_CD<151"
+sttm
+sttm <- logic
+deparse(sttm)
+sttm <- parse(text = sttm)
+sttm
+key <- subset(request,subset = sttm)
+deparse(sttm)
+sttm <- logic
+key <- subset(request,subset = sttm)
+key <- subset(request,subset = as.logic(sttm))
+key <- subset(request,subset = as.logical(sttm))
+key
+sttm <- logic
+sttm <- eval(parse(test=sttm))
+sttm <- eval(parse(text=sttm))
+key <- subset(request,subset = eval(parse(text=sttm)))
+key
+key <- extract_selection(selection = request[, "selection"],
+selection_symbol = "x", key_var = request[, key_var])
+if (length(key) == 0) {
+warning(simpleWarning(
+paste("No", key_var, "satisfies inclusion criteria in '", file, "' selected accroding to selection column.\n")
+))
+key <- try(extract_selection_logic(logic = request[, "logic"], request))
+}
+logic = request[, "logic"]
+head(logic)
+source('/Volumes/dasa/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan-Version3.Rproj/R/functions.R', echo=TRUE)
+source('/Volumes/dasa/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan-Version3.Rproj/R/functions.R', echo=TRUE)
+source('/Volumes/dasa/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan-Version3.Rproj/R/functions.R', echo=TRUE)
+key <- extract_selection(selection = request[, "selection"],
+selection_symbol = "x", key_var = request[, key_var])
+if (length(key) == 0) {
+warning(simpleWarning(
+paste("No", key_var, "satisfies inclusion criteria in '", file, "' selected accroding to selection column.\n")
+))
+key <- try(extract_selection_logic(logic = request[, "logic"], request))
+}
+key
+extract_selection_logic(logic = request[, "logic"], request)
+logic = request[, "logic"]
+logic <- paste0(as.character(na.omit(logic)))
+logic
+length(logic)>1
+source('/Volumes/dasa/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan-Version3.Rproj/R/functions.R', echo=TRUE)
+source('/Volumes/dasa/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan-Version3.Rproj/R/functions.R', echo=TRUE)
+source('/Volumes/dasa/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan-Version3.Rproj/R/functions.R', echo=TRUE)
+source('/Volumes/dasa/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan-Version3.Rproj/R/functions.R', echo=TRUE)
+key <- extract_selection(selection = request[, "selection"],
+selection_symbol = "x", key_var = request[, key_var])
+if (length(key) == 0) {
+warning(simpleWarning(
+paste("No", key_var, "satisfies inclusion criteria in '", file, "' selected accroding to selection column.\n Try to find logical statement in column `logic` of `overall list` to input
+inclusion criteria.\n")
+))
+key <- try(extract_selection_logic(logic = request[, "logic"], request))
+}
+key
+extract_selection_logic(logic = request[, "logic"], request)
+logic
+request
+logic <- paste0(as.character(na.omit(logic)))
+logic
+length(logic)>1
+subset(request, subset =eval(parse(text=logic)))
+subset = eval(parse(text=logic))
+head(request)
+tmp<- subset(request, subset = eval(parse(text=logic)))
+dim(tmp)
+logic
+logic <- "DIAGNOSIS_CD<151"
+tmp<- subset(request, subset = eval(parse(text = logic)))
+tmp
+head(tmp)
+sttm <- logic
+tmp <- subset(request, subset = eval(parse(text = sttm)))
+head(tmp)
+source('/Volumes/dasa/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan-Version3.Rproj/R/functions.R', echo=TRUE)
+key <- extract_selection(selection = request[, "selection"],
+selection_symbol = "x", key_var = request[, key_var])
+key
+if (length(key) == 0) {
+warning(simpleWarning(
+paste("No", key_var, "satisfies inclusion criteria in '", file, "' selected accroding to selection column.\n Try to find logical statement in column `logic` of `overall list` to input
+inclusion criteria.\n")
+))
+key <- try(extract_selection_logic(logic = request[, "logic"], request))
+}
+key
+source('/Volumes/dasa/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan-Version3.Rproj/R/functions.R', echo=TRUE)
+extract_selection <- function(selection, selection_symbol, key_var) {
+selection <- tolower(as.character(selection))
+if (!all(na.omit(selection) %in% selection_symbol)) {
+stop(simpleError(
+paste("Please make selection by putting", toString(selection_symbol),
+"in column `selection` of `overall list`.\n")
+))
+}
+key_var[selection %in% selection_symbol]
+}
+extract_key <- function(research_folder, database, file, key_var, key_desc = NA, type) {
+version_mode <- unlist(strsplit(file, split = ".", fixed = TRUE))
+is_short <- "short" %in% tolower(version_mode)
+if (is_short) {
+message(simpleMessage(
+if (type == "inclusion") {
+paste0(" ** Inclusion criteria '", file, "' ",
+"is in short version.\n")
+} else {
+paste0(" ** Variable list '", file, "' ",
+"is in short version.\n")
+}
+))
+extract_key_short(research_folder = research_folder, file = file,
+key_var = key_var, key_desc = key_desc)
+} else {
+message(simpleMessage(
+if (type == "inclusion") {
+paste0(" ** Inclusion criteria '", file, "' ",
+"is in long version.\n")
+} else {
+paste0(" ** Variable list '", file, "' ",
+"is in long version.\n")
+}
+))
+# check template subfolder
+template_folder <- paste(database,"_template",sep = "")
+if (!dir.exists(template_folder)) {
+stop(simpleError("Please use functions `genInclusion` and `genVariable` to generate inclusion criteria and variable lists before extracting data."))
+}
+key <- extract_key_long(research_folder = research_folder,
+database,
+file = file, key_var = key_var)
+key$is_short <- FALSE
+key
+}
+}
+source('/Volumes/dasa/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan-Version3.Rproj/R/accessData.R', echo=TRUE)
+source('/Volumes/dasa/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan-Version3.Rproj/R/accessBridge.R', echo=TRUE)
+inclu_list <- process_inclu(research.folder = research.folder,
+inclusion.xls.file = inclusion.xls.file,
+data_logic = dataLogic, overwrite = overwrite,
+username=username, password=password)
+key <- extract_key(research_folder = research.folder,
+database = database[2],
+file = inclusion.xls.file[i],
+key_var = setting$key_var,
+key_desc = setting$key_desc, type = "inclusion")
+database <- database_full(research.folder,setting$database,setting$data_type)
+key <- extract_key(research_folder = research.folder,
+database = database[2],
+file = inclusion.xls.file[i],
+key_var = setting$key_var,
+key_desc = setting$key_desc, type = "inclusion")
+key
+dat_full <- access_bridge(data_type = setting$data_type,
+conn_string = setting$conn_string,
+database = database[1],
+table_name = setting$table_name,
+username = username,
+password = password)$dat
+if (!any(setting$identifier_var %in% colnames(dat_full))) {
+id_vec <- setting$identifier_var[!setting$identifier_var %in%
+colnames(dat_full)]
+stop(simpleError(
+paste("Identifier variables", toString(id_vec),
+"are not found in table", setting$table_name)
+))
+}
+if (!setting$key_var %in% colnames(dat_full)) {
+stop(simpleError(
+paste("Key variable", setting$key_var, "is not found in table",
+setting$table_name)
+))
+}
+if (any(!is.na(setting$key_desc) & !setting$key_desc %in% colnames(dat_full))) {
+stop(simpleError(
+paste("Key variable description", setting$key_desc,
+"is not found in table", setting$table_name)
+))
+}
+head(key$key)
+source('/Volumes/dasa/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan-Version3.Rproj/R/functions.R', echo=TRUE)
+key <- extract_selection(selection = request[, "selection"],
+selection_symbol = "x", key_var = request[, key_var])
+if (length(key) == 0) {
+warning(simpleWarning(
+paste("No", key_var, "satisfies inclusion criteria in '", file, "' selected accroding to selection column.\n Try to find logical statement in column `logic` of `overall list` to input
+inclusion criteria.\n")
+))
+key <- try(extract_selection_logic(logic = request[, "logic"], request, key_var))
+}
+key
+key <- extract_key(research_folder = research.folder,
+database = database[2],
+file = inclusion.xls.file[i],
+key_var = setting$key_var,
+key_desc = setting$key_desc, type = "inclusion")
+key
+dat_full <- access_bridge(data_type = setting$data_type,
+conn_string = setting$conn_string,
+database = database[1],
+table_name = setting$table_name,
+username = username,
+password = password)$dat
+if (!any(setting$identifier_var %in% colnames(dat_full))) {
+id_vec <- setting$identifier_var[!setting$identifier_var %in%
+colnames(dat_full)]
+stop(simpleError(
+paste("Identifier variables", toString(id_vec),
+"are not found in table", setting$table_name)
+))
+}
+if (!setting$key_var %in% colnames(dat_full)) {
+stop(simpleError(
+paste("Key variable", setting$key_var, "is not found in table",
+setting$table_name)
+))
+}
+if (any(!is.na(setting$key_desc) & !setting$key_desc %in% colnames(dat_full))) {
+stop(simpleError(
+paste("Key variable description", setting$key_desc,
+"is not found in table", setting$table_name)
+))
+}
+dat <- dat_full[get(setting$key_var) %in% key$key,
+na.omit(c(setting$identifier_var, setting$key_var,
+setting$key_desc)),
+with = FALSE]
+head(dat)
+inclu_list <- process_inclu(research.folder = research.folder,
+inclusion.xls.file = inclusion.xls.file,
+data_logic = dataLogic, overwrite = overwrite,
+username=username, password=password)
+head(inclu_list)
+rdataxman_result <- extract_data(wkdir =wkdir, research.folder = "test_s_flat",
+inclusion.xls.file = "inclusion.V2M_C_DIAGNOSIS_P.csv_DIAGNOSIS_CD(DIAGNOSIS_DESC_ICD_VERSION)_csv_20170619_125125.xls",
+variable.xls.file = "variable.V2M_C_PATIENT_BASIC.dta(PATIENT_NRIC).dta_20170619_125158.xls", dataLogic = "Union",
+select.output = c("1","2","3","4"), overwrite = TRUE,
+username = "",
+password = "", conn_string = "", database = "public")
+ls(rdataxman_result)
+rdataxman_result <- extract_data(wkdir =wkdir, research.folder = "test_s_flat",
+inclusion.xls.file = "inclusion.V2M_C_DIAGNOSIS_P.csv_DIAGNOSIS_CD(DIAGNOSIS_DESC_ICD_VERSION)_csv_20170619_125125.xls",
+variable.xls.file = "variable.V2M_C_PATIENT_BASIC.dta(PATIENT_NRIC).dta_20170619_125158.xls", dataLogic = "Union",
+select.output = c("1","2","3"), overwrite = TRUE,
+username = "",
+password = "", conn_string = "", database = "public")
+rdataxman_result <- extract_data(wkdir =wkdir, research.folder = "test_s_flat_2",
+inclusion.xls.file = "inclusion.V2M_C_DIAGNOSIS_P.csv_DIAGNOSIS_CD(DIAGNOSIS_DESC_ICD_VERSION)_csv_20170619_125125.xls",
+variable.xls.file = "variable.V2M_C_PATIENT_BASIC.dta(PATIENT_NRIC).dta_20170619_125158.xls", dataLogic = "Union",
+select.output = c("1","2","3"), overwrite = TRUE,
+username = "",
+password = "", conn_string = "", database = "public")
+rdataxman_result <- extract_data(wkdir =wkdir, research.folder = "test_m_inc_m_var_flat",
+inclusion.xls.file = c("inclusion.V2M_C_DIAGNOSIS_P.csv_DIAGNOSIS_CD(DIAGNOSIS_DESC_ICD_VERSION)_csv_20170619_125125.xls",
+"inclusion.V2M_C_MOVEMENT_PC.csv_AYEAR_csv_20170619_130657.xls"),
+variable.xls.file = c("variable.V2M_C_PATIENT_BASIC.dta(PATIENT_NRIC).dta_20170619_125158.xls",
+"variable.V2M_C_DIAGNOSIS_P.Rdata(PATIENT_NRIC_CASE_NO).rdata_20170619_132103.xls"),dataLogic = "Union",
+select.output = c("1","2","3","4"), overwrite = TRUE,
+username = "",
+password = "", conn_string = "", database = "public")
+rdataxman_result <- extract_data(wkdir =wkdir, research.folder = "test_m_inc_s_var_flat",
+inclusion.xls.file = c("inclusion.V2M_C_DIAGNOSIS_P.csv_DIAGNOSIS_CD(DIAGNOSIS_DESC_ICD_VERSION)_csv_20170619_125125.xls",
+"inclusion.V2M_C_MOVEMENT_PC.csv_AYEAR_csv_20170619_130657"),
+variable.xls.file = "variable.V2M_C_PATIENT_BASIC.dta(PATIENT_NRIC).dta_20170619_125158.xls", dataLogic = "Union",
+select.output = c("1","2","3","4"), overwrite = TRUE,
+username = "",
+password = "", conn_string = "", database = "public")
+rdataxman_result <- extract_data(wkdir =wkdir, research.folder = "test_m_inc_s_var_flat",
+inclusion.xls.file = c("inclusion.V2M_C_DIAGNOSIS_P.csv_DIAGNOSIS_CD(DIAGNOSIS_DESC_ICD_VERSION)_csv_20170619_125125.xls",
+"inclusion.V2M_C_MOVEMENT_PC.csv_AYEAR_csv_20170619_130657.xls"),
+variable.xls.file = "variable.V2M_C_PATIENT_BASIC.dta(PATIENT_NRIC).dta_20170619_125158.xls", dataLogic = "Union",
+select.output = c("1","2","3","4"), overwrite = TRUE,
+username = "",
+password = "", conn_string = "", database = "public")
+devtools::build()
+devtools::build(path = "~/")
+install.packages("~/RDataXMan_1.0.7.tar.gz", repos = NULL, type = "source")
+devtools::build(path = "~/")
+install.packages("~/RDataXMan_1.0.7.tar.gz", repos = NULL, type = "source")
+devtools::build(path = "~/")
+install.packages("~/RDataXMan_1.0.7.tar.gz", repos = NULL, type = "source")
+library(RDataXMan)
+rdataxman_result <- extract_data(
+wkdir = "C:/Users/e0013210/Documents/Research projects",
+research.folder = "QoL study",
+inclusion.xls.file = c(
+"inclusion.data_qol.xlsx_Gender_xlsx.xls",
+"inclusion.v2m_c_diagnosis_p_3yr_DIAGNOSIS_YEAR_sql_ephsy_20170622_172115.xls"
+),
+variable.xls.file = c(
+"variable.data_qol.xlsx(PATIENT_NRIC).xlsx.xls",
+"variable.v2m_c_diagnosis_p_3yr_(PATIENT_NRIC_CASE_NO).sql_ephsy_20170622_172133.xls",
+"variable.v2m_c_movement_pc_3yr_(PATIENT_NRIC_CASE_NO).sql_ephsy_20170622_172208.xls",
+"variable.v2m_c_patient_basic_3yr_(PATIENT_NRIC).sql_ephsy_20170622_172459.xls"),
+dataLogic = "Intersection", select.output = c("1","2","3","4"), overwrite
+= TRUE,username = "ephsy", password = "1111", conn_string = "", database =
+"ephsy")
+devtools::build(path = "~/")
+getwd()
+devtools::build(path = "~/")
+install.packages("~/RDataXMan_1.0.7.tar.gz", repos = NULL, type = "source")
+devtools::build()
+install.packages("data.tree")
+devtools::build()
+install.packages("W:/DASA/RDataXMan Package/package/RDataXMan/version3/RDataXMan_1.0.8.tar.gz", repos = NULL, type = "source")
+remove.packages("RDataXMan", lib="C:/Program Files/R/R-3.2.0/library")
+library(RcmdrPlugin.RDataXMan)
+source('~/Downloads/RDataXMan/RDataXMan-Version3.Rproj/R/genInclusion.R')
+source('~/Downloads/RDataXMan/RDataXMan-Version3.Rproj/R/genVariable.R')
+source('~/Downloads/RDataXMan/RDataXMan-Version3.Rproj/R/extract_data.R')
+args(genInclusion)
+args(genVariable)
+args(extract_data)
+View(extract_data)
