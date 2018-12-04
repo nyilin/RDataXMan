@@ -4,7 +4,13 @@
 \alias{merge_data}
 \title{Merge inclusion data or variable list}
 \usage{
-merge_data(data_list, data_logic)
+merge_data(data_list, dataLogic)
+}
+\arguments{
+\item{data_list}{A list of data to merge.}
+
+\item{dataLogic}{Whether to take \code{union} or \code{intersection} of
+inclusion criteria, if multiple criteria specified. Default is \code{NA}.}
 }
 \description{
 Merge inclusion data or variable list

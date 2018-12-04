@@ -6,6 +6,9 @@
 \usage{
 check_input(...)
 }
+\arguments{
+\item{...}{Any input.}
+}
 \description{
 Check validity of input for the 3 main functions
 }
@@ -15,13 +18,13 @@ This function is needed because default values of input is
 }
 \examples{
 {
-check_input(NA)
-check_input(NULL)
-check_input(NULL, NULL)
-check_input(NA, NULL)
-check_input(NULL, NA)
-check_input(NULL, "a")
-check_input("a", NULL)
-check_input(c("a", NULL, NA, "b", ""))
+RDataXMan:::check_input(NA)
+RDataXMan:::check_input(NULL)
+RDataXMan:::check_input(NULL, NULL)
+RDataXMan:::check_input(NA, NULL)
+RDataXMan:::check_input(NULL, NA)
+RDataXMan:::check_input(NULL, "a")
+RDataXMan:::check_input("a", NULL)
+RDataXMan:::check_input(c("a", NULL, NA, "b", ""))
 }
 }

@@ -6,6 +6,15 @@
 \usage{
 write_to_file(table, file, sheetName, overwrite = NULL)
 }
+\arguments{
+\item{table}{Table to write to file.}
+
+\item{file}{Excel file to write.}
+
+\item{sheetName}{Name of Excel sheet to assign.}
+
+\item{overwrite}{Whether to overwrite existing file.}
+}
 \description{
 Check whether file exists and write file
 }

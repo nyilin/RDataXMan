@@ -2,22 +2,24 @@
 % Please edit documentation in R/ListName.R
 \name{ListFN}
 \alias{ListFN}
-\title{List file name, table name and variable name of specific table
-List all the file names of inclusion criteria or varaibles list  --------}
+\title{List file name, table name and variable name of specific table}
 \usage{
 ListFN(wkdir = getwd(), research.folder = NA, mode = NA)
 }
 \arguments{
-\item{wkdir}{character string with the whole work-directory.}
+\item{wkdir}{The path to working directory. See \code{\link{initWkdir}} for
+details on a working directory.}
 
-\item{research.folder}{character string with the name of research folder's name}
+\item{research.folder}{The name of research folder. See
+\code{\link{initResearchFolder}} for details on a research folder.}
 
-\item{mode}{character string to indicate whether list file names of inclusion criteria file or variable list.}
+\item{mode}{character string to indicate whether list file names of inclusion
+criteria file or variable list.}
 }
 \value{
-character vector includes all the file names based on the mode choice.
+character vector includes all the file names based on the mode
+  choice.
 }
 \description{
-List file name, table name and variable name of specific table
-List all the file names of inclusion criteria or varaibles list  --------
+List all the file names of inclusion criteria or varaibles list.
 }

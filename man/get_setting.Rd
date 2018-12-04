@@ -4,7 +4,13 @@
 \alias{get_setting}
 \title{Extract information from inclusion setting list}
 \usage{
-get_setting(research_folder, file)
+get_setting(research.folder, file)
+}
+\arguments{
+\item{research.folder}{The name of research folder. See
+\code{\link{initResearchFolder}} for details on a research folder.}
+
+\item{file}{File name of inclusion setting list.}
 }
 \description{
 Extract information from inclusion setting list

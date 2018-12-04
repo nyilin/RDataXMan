@@ -5,8 +5,9 @@
 \title{Generate variable list.}
 \usage{
 genVariable(wkdir = getwd(), research.folder = NA, table_name = NA,
-  data.type = NA, database = NA, identifier.var = NA, omit.var = NA,
-  overwrite = TRUE, username = NA, password = NA, conn_string = NA)
+  data.type = NA, database = NA, identifier.var = NA,
+  omit.var = NA, overwrite = TRUE, username = NA, password = NA,
+  conn_string = NA)
 }
 \arguments{
 \item{wkdir}{The path to working directory. See \code{\link{initWkdir}} for

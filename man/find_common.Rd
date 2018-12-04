@@ -6,6 +6,9 @@
 \usage{
 find_common(s_list)
 }
+\arguments{
+\item{s_list}{A list of strings.}
+}
 \description{
 Find common strings in all elements of a list of strings
 }

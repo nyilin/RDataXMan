@@ -6,6 +6,15 @@
 \usage{
 write_data_raw(data_list, type, research.folder)
 }
+\arguments{
+\item{data_list}{The list of data to write.}
+
+\item{type}{To decide whether to extract column names (\code{vafiable}) or
+whole data.}
+
+\item{research.folder}{The name of research folder. See
+\code{\link{initResearchFolder}} for details on a research folder.}
+}
 \description{
 Write a list of raw data to a group of \code{csv}
 }

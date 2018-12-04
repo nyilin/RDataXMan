@@ -4,8 +4,34 @@
 \alias{access_bridge}
 \title{Wrapper function to link to data}
 \usage{
-access_bridge(data_type, conn_string, database, table_name, username, password,
-  type = NA)
+access_bridge(data.type, conn_string, database, table_name, username,
+  password, type = NA)
+}
+\arguments{
+\item{data.type}{\code{flat} for flat tables, \code{sql} fo rSQL database,
+\code{ore} for Oracle R Enterprise (ORE) database, and \code{oracle} for
+Oracle in SQL mode.}
+
+\item{conn_string}{Connection string for accessing ORE server. Default is
+\code{NA}.}
+
+\item{database}{Name of database. Should be either \code{private} or
+\code{public} for flat tables, indicating whether data is stored in
+\code{public_data} or \code{research/[research folder]/private_data}, or
+the actual name of database if extracting data from a database.}
+
+\item{table_name}{The name of dataset. File extension must be included if the
+data is saved as a flat file instead of in a database, e.g. `data.csv`
+should be given instead of simply `data`.}
+
+\item{username}{User name for accessing database if \code{data.type} is not
+\code{flat}. Default is \code{NA} for flat tables.}
+
+\item{password}{Password for accessing database if \code{data.type} is not
+\code{flat}. Default is \code{NA} for flat tables.}
+
+\item{type}{To decide whether to extract column names (\code{vafiable}) or
+whole data.}
 }
 \value{
 Returns the linked data (as \code{data.table}), connection string

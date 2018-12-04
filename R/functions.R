@@ -2,6 +2,7 @@
 # Generic helper functions ------------------------------------------------
 
 #' Replaces `*` in a string with digits 0 to 9
+#' @param s A string.
 replace_key_var <- function(s) {
   if (!str_detect(string = s, pattern = "[*]")) {
     return(s)
@@ -10,6 +11,7 @@ replace_key_var <- function(s) {
   }
 }
 #' Find common strings in all elements of a list of strings
+#' @param s_list A list of strings.
 find_common <- function(s_list) {
   s_all <- as.character(unlist(s_list))
   s_count <- as.data.frame(table(s_all), stringsAsFactors = FALSE)
@@ -20,8 +22,12 @@ find_common <- function(s_list) {
          common = sort(s_count$s_all[s_count$Freq == length(s_list)]))
   }
 }
-#' Rename non-key variables in a list of variable names if they appear multiple
-#' times in the list of variable names
+#' Rename column names
+#' @description  Rename non-key variables in a list of variable names if they
+#'   appear multiple times in the list of variable names.
+#' @param name_list A list of variable names.
+#' @param all_list A larger list of variable names.
+#' @param key_list A list of identifier names. These should not be renamed.
 rename_cols <- function(name_list, all_list = name_list, key_list) {
   name_vec <- unlist(all_list)
   tb <- as.data.frame(table(name_vec))
@@ -35,10 +41,66 @@ rename_cols <- function(name_list, all_list = name_list, key_list) {
     nm
   })
 }
+#' Converts factor columns to character
+#' @param data A data frame.
+#' @details This is needed because \code{ore.pull} automatically converts
+#'   character columns to factors.
+factor_to_char <- function(data) {
+  data[] <- lapply(data, function(x) {
+    if (is.factor(x)) {
+      as.character(x)
+    } else {
+      x
+    }
+  })
+}
+#' Convert time to character
+#' @inheritParams factor_to_char
+#' @details This is because \code{ore.pull} automatically add time zone of Date
+#'   type columns.
+time_to_char <- function(data) {
+  data[] <- lapply(data, function(x) {
+    if (inherits(x,c("POSIXt","POSIXct"))) {
+      as.character(x)
+    } else {
+      x
+    }
+  })
+}
+
+#' Flag message for successfully loading a table
+#' @param is_database Whether table is in a database.
+#' @inheritParams access_bridge
+success_msg <- function(table_name, database, is_database = TRUE) {
+  if (is_database) {
+    message(simpleMessage(
+      paste("Table", table_name, "is extracted from database", database, "\n")
+    ))
+  } else {
+    message(simpleMessage(
+      paste("Table", table_name, "is loaded\n")
+    ))
+  }
+}
+#' Flag error for failing to find a table
+#' @inheritParams access_bridge
+#' @param is_database Whether table is in a database.
+fail_error <- function(table_name, database, is_database = TRUE) {
+  if (is_database) {
+    stop(simpleError(
+      paste("Failed to find table", table_name, "in database", database, "\n")
+    ))
+  } else {
+    stop(simpleError(
+      paste("Failed to find table", table_name, "in", database, "folder\n")
+    ))
+  }
+}
 
 # Check input -------------------------------------------------------------
 
 #' Converts a comma-seperated string into a vector
+#' @param string A comma-separated string.
 unzip <- function(string) {
   if (is.character(string) & length(grep(string, pattern = ","))) {
     unlist(strsplit(x = string, split = ","))
@@ -47,17 +109,18 @@ unzip <- function(string) {
   }
 }
 #' Check validity of input for the 3 main functions
+#' @param ... Any input.
 #' @details This function is needed because default values of input is
 #'   overwritten to \code{""} by Rcmdr.
 #' @examples {
-#' check_input(NA)
-#' check_input(NULL)
-#' check_input(NULL, NULL)
-#' check_input(NA, NULL)
-#' check_input(NULL, NA)
-#' check_input(NULL, "a")
-#' check_input("a", NULL)
-#' check_input(c("a", NULL, NA, "b", ""))
+#' RDataXMan:::check_input(NA)
+#' RDataXMan:::check_input(NULL)
+#' RDataXMan:::check_input(NULL, NULL)
+#' RDataXMan:::check_input(NA, NULL)
+#' RDataXMan:::check_input(NULL, NA)
+#' RDataXMan:::check_input(NULL, "a")
+#' RDataXMan:::check_input("a", NULL)
+#' RDataXMan:::check_input(c("a", NULL, NA, "b", ""))
 #' }
 check_input <- function(...) {
   args <- list(...)
@@ -74,49 +137,51 @@ check_input <- function(...) {
     as.character(na.omit(v))
   }
 }
-#' Check data_type and table_name
-check_type <- function(table_name, data_type, database) {
+#' Check data.type and table_name
+#' @inheritParams genVariable
+check_type <- function(table_name, data.type, database) {
   file_vec <- unlist(strsplit(table_name, split = "\\."))
   table_file <- file.path(database, table_name)
   if (file.exists(table_file)) {
     # Input is flat table.
-    if (is.na(data_type)) {
-      # In data_type is not specified
-      data_type <- file_vec[length(file_vec)]
+    if (is.na(data.type)) {
+      # In data.type is not specified
+      data.type <- file_vec[length(file_vec)]
     } else {
-      # Check if data_type is consistent
-      if (data_type != tolower(file_vec[length(file_vec)])) {
+      # Check if data.type is consistent
+      if (data.type != tolower(file_vec[length(file_vec)])) {
         warning(simpleWarning(
-          paste0("-- `data.type` specified is ", data_type,
+          paste0("-- `data.type` specified is ", data.type,
                  ", yet data type inferred from `table_name` is",
                  tolower(file_vec[length(file_vec)]), ".",
                  " Using data type inferred from `table_name` instead.")
         ))
       }
-      data_type <- tolower(file_vec[length(file_vec)])
+      data.type <- tolower(file_vec[length(file_vec)])
     }
   } else {
     # Data is flat table without extension, or database
-    # data_type must not be NA
-    if (is.na(data_type)) {
+    # data.type must not be NA
+    if (is.na(data.type)) {
       stop(simpleError("Please either specify `data.type`, or include file extension in `table_name` if data is stored in a flat table."))
     } else {
-      if (!data_type %in% c("ore", "oracle", "sql")) {
+      if (!data.type %in% c("ore", "oracle", "sql")) {
         # Data is flat table
-        table_name <- paste(table_name, data_type, sep = ".")
+        table_name <- paste(table_name, data.type, sep = ".")
       }
     }
-    list(table_name = table_name, data_type = data_type)
+    list(table_name = table_name, data.type = data.type)
   }
 }
 
 #' Make the database to a full database
-database_full <- function(research.folder,database,data_type){
+#' @inheritParams genVariable
+database_full <- function(research.folder,database,data.type){
   # Check database
   if (is.na(database)) {
     warning(simpleWarning("Value for `database` is neither `public` nor `private`. Interpreted as `public` by default."))
     database <- c("public_data","public_data")
-  }else if(tolower(data_type)%in%c("ore","oracle","sql")){
+  }else if(tolower(data.type)%in%c("ore","oracle","sql")){
     database <- c(database,"public_data")
   }else if (database == "private") {
     database <- c(file.path("research", research.folder, "private_data"),
@@ -127,36 +192,36 @@ database_full <- function(research.folder,database,data_type){
   database
 }
 
-
 # Read setting list -------------------------------------------------------
 
 #' Extract information from inclusion setting list
-
-get_setting <- function(research_folder, file) {
-  # setting_list <- read_excel(file.path("research", research_folder,
+#' @inheritParams genVariable
+#' @param file File name of inclusion setting list.
+get_setting <- function(research.folder, file) {
+  # setting_list <- read_excel(file.path("research", research.folder,
   #                                      "request_input", file),
   #                            sheet = "setting list", na = c("", " ", "NA"))
-  setting_list <- read.xlsx(file.path("research", research_folder,
+  setting_list <- read.xlsx(file.path("research", research.folder,
                                       "request_input", file),
-                            sheetName = "setting list", stringsAsFactors=FALSE )
+                            sheetName = "setting list", stringsAsFactors = FALSE)
 
   #setting_list <- as.data.frame(setting_list)
   setting_list[, 2] <- as.character(setting_list[, 2])
   if ("key.var" %in% setting_list[, 1]) {
-    key_var <- setting_list[which(setting_list[, 1] == "key.var"), 2]
-    key_desc <- unzip(setting_list[which(setting_list[, 1] == "key.desc"), 2])
+    key.var <- setting_list[which(setting_list[, 1] == "key.var"), 2]
+    key.desc <- unzip(setting_list[which(setting_list[, 1] == "key.desc"), 2])
   } else {
-    key_var <- NULL
-    key_desc <- NULL
+    key.var <- NULL
+    key.desc <- NULL
   }
   list(
     table_name = setting_list[which(setting_list[, 1] == "table_name"), 2],
-    key_var = key_var,
-    key_desc = key_desc,
+    key.var = key.var,
+    key.desc = key.desc,
     identifier_var = unzip(
       setting_list[which(setting_list[, 1] == "identifier.var"), 2]
     ),
-    data_type = setting_list[which(setting_list[, 1] == "data.type"), 2],
+    data.type = setting_list[which(setting_list[, 1] == "data.type"), 2],
     conn_string = setting_list[which(setting_list[, 1] == "conn_string"), 2],
     database = setting_list[which(setting_list[, 1] == "database"), 2]
   )
@@ -165,38 +230,43 @@ get_setting <- function(research_folder, file) {
 # Extract key for inclusion -----------------------------------------------
 
 #' Read in inclusion in short format
-extract_key_short <- function(research_folder, file, key_var, key_desc = NA) {
-  request <- read_excel(file.path("research", research_folder, "request_input",
+#' @inheritParams get_setting
+#' @inheritParams genInclusion
+extract_key_short <- function(research.folder, file, key.var, key.desc = NA) {
+  request <- read_excel(file.path("research", research.folder, "request_input",
                                   file),
                         sheet = "overall list")
   request <- as.data.frame(request)
-  if (!(key_var %in% colnames(request))) {
+  if (!(key.var %in% colnames(request))) {
     stop(simpleError(
-      paste(key_var, "is not consistent in the request inclusion criteria.",
+      paste(key.var, "is not consistent in the request inclusion criteria.",
             "The first column that is not `sno` is treated as key variable.")
     ))
   }
   # Expand the incomplete key variable and return
-  key <- request[, key_var]
+  key <- request[, key.var]
   key <- as.vector(unlist(sapply(key, function(k) replace_key_var(k))))
-  if (!is.na(key_desc)) {
-    desc <- request[, key_desc]
+  if (!is.na(key.desc)) {
+    desc <- request[, key.desc]
   } else {
     desc <- NULL
   }
   list(key = key, desc = desc,
-       is_expanded = any(stringr::str_detect(string = request[, key_var],
+       is_expanded = any(stringr::str_detect(string = request[, key.var],
                                              pattern = "[*]")))
 }
 #' Validate request form in long format
+#' @inheritParams genInclusion
+#' @param request_file Inclusion list.
+#' @param template_file Inclusion template generated by \code{genInclusion}.
 #' @details \code{request_file} is annotated inclusion list, and
 #'   \code{template_file} is the one generated by \code{genInclusion}. Column
 #'   names and \code{key.var} should be identical in the two files.
-check_long <- function(research_folder, database, request_file, template_file) {
-  # request <- read_excel(file.path("research", research_folder, "request_input",
+check_long <- function(research.folder, database, request_file, template_file) {
+  # request <- read_excel(file.path("research", research.folder, "request_input",
   #                                 request_file),
   #                       sheet = "overall list")
-  request <- read.xlsx(file.path("research", research_folder, "request_input",
+  request <- read.xlsx(file.path("research", research.folder, "request_input",
                                  request_file),
                        sheetName = "overall list", stringsAsFactors = FALSE)
   request <- as.data.frame(request)
@@ -220,7 +290,11 @@ check_long <- function(research_folder, database, request_file, template_file) {
   }
   request
 }
-extract_selection <- function(selection, selection_symbol, key_var) {
+#' Extract inclusion criteria based on selection symbols
+#' @param selection The column for selection.
+#' @param selection_symbol Symbol to indicate selection.
+#' @inheritParams genInclusion
+extract_selection <- function(selection, selection_symbol, key.var) {
   selection <- tolower(as.character(selection))
   if (!all(na.omit(selection) %in% selection_symbol)) {
     stop(simpleError(
@@ -228,50 +302,59 @@ extract_selection <- function(selection, selection_symbol, key_var) {
             "in column `selection` of `overall list`.\n")
     ))
   }
-  key_var[selection %in% selection_symbol]
+  key.var[selection %in% selection_symbol]
 }
-extract_selection_logic <- function(logic, request, key_var) {
+#' @describeIn extract_selection Extract selection based on logit.
+#' @param logic The column for logic.
+#' @param request Data read from request file.
+#' @inheritParams genInclusion
+extract_selection_logic <- function(logic, request, key.var) {
   logic <- paste0(as.character(na.omit(logic)))
   if (length(logic) > 1) {
     stop(simpleError("Please write logical statement in one row."))
   } else {
     sttm <- logic
-    subset(request, subset = eval(parse(text = sttm)))[, key_var]
+    subset(request, subset = eval(parse(text = sttm)))[, key.var]
   }
 }
-#' Read in inclusion in long format or variable list (in this case key_var is
+#' Read in inclusion in long format or variable list (in this case key.var is
 #' variable)
-extract_key_long <- function(research_folder, database, file, key_var) {
-  request <- check_long(research_folder = research_folder,
+#' @inheritParams genInclusion
+#' @param file The inclusion or varible list.
+extract_key_long <- function(research.folder, database, file, key.var) {
+  request <- check_long(research.folder = research.folder,
                         database = database,
                         request_file = file,
                         template_file = file)
   request <- as.data.frame(request)
-  if (!(key_var %in% colnames(request))) {
+  if (!(key.var %in% colnames(request))) {
     stop(simpleError(
-      paste(key_var, "is not consistent in the request inclusion criteria.",
+      paste(key.var, "is not consistent in the request inclusion criteria.",
             "The first column that is not `sno` is treated as key variable.")
     ))
   }
   key <- extract_selection(selection = request[, "selection"],
-                           selection_symbol = "x", key_var = request[, key_var])
+                           selection_symbol = "x", key.var = request[, key.var])
   if (length(key) == 0) {
     warning(simpleWarning(
       paste(
         "Using logical statement in the first entry of column `logic`",
         "in `overall list` to determine inclusion criteria.\n"
-        # "No", key_var, "satisfies inclusion criteria in '", file,
+        # "No", key.var, "satisfies inclusion criteria in '", file,
         # "' selected accroding to selection column.\n"
       )
     ))
     key <- try(extract_selection_logic(
-      logic = request[, "logic"], request = request, key_var = key_var
+      logic = request[, "logic"], request = request, key.var = key.var
     ))
   }
   list(key = key)
 }
 #' Read in inclusion and variable (wrapper)
-extract_key <- function(research_folder, database, file, key_var, key_desc = NA,
+#' @inheritParams genInclusion
+#' @inheritParams extract_key_long
+#' @inheritParams access_bridge
+extract_key <- function(research.folder, database, file, key.var, key.desc = NA,
                         type) {
   version_mode <- unlist(strsplit(file, split = ".", fixed = TRUE))
   is_short <- "short" %in% tolower(version_mode)
@@ -285,8 +368,8 @@ extract_key <- function(research_folder, database, file, key_var, key_desc = NA,
                "is in short version.\n")
       }
     ))
-    extract_key_short(research_folder = research_folder, file = file,
-                      key_var = key_var, key_desc = key_desc)
+    extract_key_short(research.folder = research.folder, file = file,
+                      key.var = key.var, key.desc = key.desc)
   } else {
     message(simpleMessage(
       if (type == "inclusion") {
@@ -301,9 +384,9 @@ extract_key <- function(research_folder, database, file, key_var, key_desc = NA,
       stop(simpleError("Please use functions `genInclusion` and `genVariable` to generate inclusion criteria and variable lists before extracting data."))
     }
 
-    key <- extract_key_long(research_folder = research_folder,
+    key <- extract_key_long(research.folder = research.folder,
                             database = database,
-                            file = file, key_var = key_var)
+                            file = file, key.var = key.var)
     key$is_short <- FALSE
     key
   }
@@ -311,33 +394,37 @@ extract_key <- function(research_folder, database, file, key_var, key_desc = NA,
 
 # Compare short inclusion -------------------------------------------------
 
-#' Write a table to compare key_var and key_desc for short version inclusion
-compare_key_short <- function(setting, key) {
-  if (is.na(setting$key_desc) & key$is_expanded) {
+#' Write a table to compare key.var and key.desc for short version inclusion
+#' @param setting List of settings produced using \code{get_setting}.
+#' @param key List of information on key variable produced using
+#'   \code{extract_key}.
+#' @param dat A data frame.
+compare_key_short <- function(setting, key, dat) {
+  if (is.na(setting$key.desc) & key$is_expanded) {
     if (key$is_expanded) {
-      key_var_dat <- as.data.frame(unique(dat[, setting$key_var, with = FALSE]))
-      key_var_req <- as.data.frame(key$key)
-      names(key_var_req) <- setting$key_var
-      summary_comp <- merge(key_var_dat, key_var_req, by = setting$key_var,
+      key.var_dat <- as.data.frame(unique(dat[, setting$key.var, with = FALSE]))
+      key.var_req <- as.data.frame(key$key)
+      names(key.var_req) <- setting$key.var
+      summary_comp <- merge(key.var_dat, key.var_req, by = setting$key.var,
                             all = TRUE, sort = TRUE,
                             suffixes = c(".dat", ".req"))
       file <- paste0("compare_requirement_", setting$table_name,
-                     "_", setting$key_var, "summary.xlsx")
+                     "_", setting$key.var, "summary.xlsx")
       list(table = summary_comp, file = file)
     } else {
       NULL
     }
   } else {
-    key_var_dat <- as.data.frame(unique(dat[, c(setting$key_var, setting$key_desc),
+    key.var_dat <- as.data.frame(unique(dat[, c(setting$key.var, setting$key.desc),
                                             with = FALSE]))
-    key_var_req <- as.data.frame(cbind(key$key, key$desc))
-    names(key_var_req) <- c(setting$key_var, setting$key_desc)
-    summary_comp <- merge(key_var_dat, key_var_req, by = setting$key_var,
+    key.var_req <- as.data.frame(cbind(key$key, key$desc))
+    names(key.var_req) <- c(setting$key.var, setting$key.desc)
+    summary_comp <- merge(key.var_dat, key.var_req, by = setting$key.var,
                           all = TRUE, sort = TRUE,
                           suffixes = c(".dat", ".req"))
     file <- paste0("compare_requirement_", setting$table_name,
-                   "_", setting$key_var,
-                   "(", paste(setting$key_desc, collapse = "_"), ")",
+                   "_", setting$key.var,
+                   "(", paste(setting$key.desc, collapse = "_"), ")",
                    "summary.xlsx")
     list(table = summary_comp, file = file)
   }
@@ -346,7 +433,9 @@ compare_key_short <- function(setting, key) {
 # Extract and merge inclusion data ----------------------------------------
 
 #' Merge inclusion data or variable list
-merge_data <- function(data_list, data_logic) {
+#' @param data_list A list of data to merge.
+#' @inheritParams extract_data
+merge_data <- function(data_list, dataLogic) {
   dat_m <- as.data.frame(data_list[[1]]$dat)
   if (length(data_list) == 1) {
     return(dat_m)
@@ -360,14 +449,16 @@ merge_data <- function(data_list, data_logic) {
     key_i <- data_list[[i]]$identifier_var
     # key_all <- union(key_all, key_i)
     key_m <- intersect(key_m, key_i)
-    dat_m <- merge(dat_m, dat_i, by = key_m, all = (data_logic == "union"))
-    # key_var of the merged data include key_var of all data that are merged
+    dat_m <- merge(dat_m, dat_i, by = key_m, all = (dataLogic == "union"))
+    # key.var of the merged data include key.var of all data that are merged
     key_m <- union(key_m, key_i)
   }
   data.table::as.data.table(dat_m)
 }
-#' Find the intersection or union of all inclusion, based on \code{data_logic}
-merge_inclu <- function(inclu_list, data_logic) {
+#' Find the intersection or union of all inclusion, based on \code{dataLogic}
+#' @param inclu_list A list of inclusion to combine.
+#' @inheritParams extract_data
+merge_inclu <- function(inclu_list, dataLogic) {
   if (length(inclu_list) == 1) {
     id_merged <- as.list(inclu_list[[1]]$dat[, inclu_list[[1]]$identifier_var,
                                              with = FALSE])
@@ -376,7 +467,7 @@ merge_inclu <- function(inclu_list, data_logic) {
     return(list(inclu_list = inclu_list, data_merged = inclu_list[[1]]$dat,
                 id_merged = id_merged,
                 id_common = inclu_list[[1]]$identifier_var,
-                key_all = inclu_list[[1]]$key_var))
+                key_all = inclu_list[[1]]$key.var))
   }
   id <- find_common(lapply(inclu_list, function(l) l$identifier_var))
   id_all <- id$all
@@ -390,8 +481,8 @@ merge_inclu <- function(inclu_list, data_logic) {
   # Rename variables if they exist in more than 1 inclusion tables
   # Do not rename identifier_var
   id_list <- lapply(inclu_list, function(l) l$identifier_var)
-  key_list <- lapply(inclu_list, function(l) l$key_var)
-  desc_list <- lapply(inclu_list, function(l) l$key_desc)
+  key_list <- lapply(inclu_list, function(l) l$key.var)
+  desc_list <- lapply(inclu_list, function(l) l$key.desc)
   all_list <- lapply(inclu_list, function(l) colnames(l$dat))
   key_list2 <- rename_cols(name_list = key_list, all_list = all_list,
                            key_list = id_list)
@@ -401,10 +492,10 @@ merge_inclu <- function(inclu_list, data_logic) {
                              key_list = id_list)
   for (i in 1:length(inclu_list)) {
     inclu_list[[i]]$cname2 <- cname_list2[[i]]
-    inclu_list[[i]]$key_desc2 <- desc_list2[[i]]
-    inclu_list[[i]]$key_var2 <- key_list2[[i]]
+    inclu_list[[i]]$key.desc2 <- desc_list2[[i]]
+    inclu_list[[i]]$key.var2 <- key_list2[[i]]
   }
-  inclu_m <- merge_data(data_list = inclu_list, data_logic = data_logic)
+  inclu_m <- merge_data(data_list = inclu_list, dataLogic = dataLogic)
   id_merged <- as.list(inclu_m[, unique(id_all), with = FALSE])
   id_merged <- lapply(id_merged, unique)
   # Filter raw inclusion data
@@ -415,30 +506,31 @@ merge_inclu <- function(inclu_list, data_logic) {
   })
   list(inclu_list = inclu_list, data_merged = inclu_m,
        id_merged = id_merged, id_common = id_common,
-       key_all = unlist(lapply(inclu_list, function(l) l$key_var2)))
+       key_all = unlist(lapply(inclu_list, function(l) l$key.var2)))
 }
 #' Processing request form
-process_inclu <- function(research.folder, inclusion.xls.file, data_logic,
+#' @inheritParams extract_data
+process_inclu <- function(research.folder, inclusion.xls.file, dataLogic,
                           overwrite, username=NA, password=NA){
   inclu_list <- lapply(seq_along(inclusion.xls.file), function(i) {
-    setting <- get_setting(research_folder = research.folder,
+    setting <- get_setting(research.folder = research.folder,
                            file = inclusion.xls.file[i])
     if (basename(setting$database) == "private_data") {
       setting$db <- "private"
     } else {
       setting$db <- "public"
     }
-    database <- database_full(research.folder,setting$db,setting$data_type)
-    # Extract selected values of key_var and key_desc (if any)
-    key <- extract_key(research_folder = research.folder,
+    database <- database_full(research.folder,setting$db,setting$data.type)
+    # Extract selected values of key.var and key.desc (if any)
+    key <- extract_key(research.folder = research.folder,
                        database = database[2],
                        file = inclusion.xls.file[i],
-                       key_var = setting$key_var,
-                       key_desc = setting$key_desc, type = "inclusion")
+                       key.var = setting$key.var,
+                       key.desc = setting$key.desc, type = "inclusion")
     # Load inclusion data
-    # database <- database_full(research.folder,setting$database,setting$data_type)
+    # database <- database_full(research.folder,setting$database,setting$data.type)
     # print(database)
-    dat_full <- access_bridge(data_type = setting$data_type,
+    dat_full <- access_bridge(data.type = setting$data.type,
                               conn_string = setting$conn_string,
                               database = setting$database,
                               table_name = setting$table_name,
@@ -452,22 +544,22 @@ process_inclu <- function(research.folder, inclusion.xls.file, data_logic,
               "are not found in table", setting$table_name)
       ))
     }
-    if (!setting$key_var %in% colnames(dat_full)) {
+    if (!setting$key.var %in% colnames(dat_full)) {
       stop(simpleError(
-        paste("Key variable", setting$key_var, "is not found in table",
+        paste("Key variable", setting$key.var, "is not found in table",
               setting$table_name)
       ))
     }
-    if (any(!is.na(setting$key_desc) & !setting$key_desc %in% colnames(dat_full))) {
+    if (any(!is.na(setting$key.desc) & !setting$key.desc %in% colnames(dat_full))) {
       stop(simpleError(
-        paste("Key variable description", setting$key_desc,
+        paste("Key variable description", setting$key.desc,
               "is not found in table", setting$table_name)
       ))
     }
     # Extract subset of interest
-    dat <- dat_full[get(setting$key_var) %in% key$key,
-                    na.omit(c(setting$identifier_var, setting$key_var,
-                              setting$key_desc)),
+    dat <- dat_full[get(setting$key.var) %in% key$key,
+                    na.omit(c(setting$identifier_var, setting$key.var,
+                              setting$key.desc)),
                     with = FALSE]
     dat <- unique(dat)
     if (nrow(dat) == 0) {
@@ -476,12 +568,12 @@ process_inclu <- function(research.folder, inclusion.xls.file, data_logic,
               "satisfy inclusion criteria specified.")
       ))
     }
-    # If we use identifier_var as key_var, there will be duplicated columns in
+    # If we use identifier_var as key.var, there will be duplicated columns in
     # an inclusion data. In this case we will remove duplicates.
     dat <- dat[, unique(names(dat)), with = FALSE]
-    # Compare key_desc for short version
+    # Compare key.desc for short version
     if (key$is_short) {
-      summary_comp <- compare_key_short(setting = setting, key = key)
+      summary_comp <- compare_key_short(setting = setting, key = key, dat = dat)
       if (!is.null(summary_comp)) {
         write_to_file(table = summary_comp$table,
                       file = file.path("research", research.folder,
@@ -491,15 +583,17 @@ process_inclu <- function(research.folder, inclusion.xls.file, data_logic,
     }
     list(dat = dat, file_name = inclusion.xls.file[i],
          table_name = setting$table_name,
-         key_var = setting$key_var, key_desc = setting$key_desc,
+         key.var = setting$key.var, key.desc = setting$key.desc,
          identifier_var = setting$identifier_var, index = i)
   })
-  # Merge inclusion data based on data_logic
-  merge_inclu(inclu_list, data_logic)
+  # Merge inclusion data based on dataLogic
+  merge_inclu(inclu_list, dataLogic)
 }
 
 # Summarise inclusion -----------------------------------------------------
 
+#' Count based on inclusion
+#' @inheritParams merge_inclu
 count_inclu <- function(inclu_list) {
   id_vec <- names(inclu_list$id_merged)
   # Count unique identifiers
@@ -551,6 +645,10 @@ count_inclu <- function(inclu_list) {
 
 # Extract and merge variable list -----------------------------------------
 
+#' Filter data based on identifier variable
+#' @param dat A data.frame.
+#' @param identifier_var Identifier variable.
+#' @param id_merged A data.frame of merged identifiers.
 filter_data <- function(dat, identifier_var, id_merged) {
   id_common <- intersect(identifier_var, names(id_merged))
   rows <- unlist(lapply(id_common, function(id) {
@@ -564,8 +662,10 @@ filter_data <- function(dat, identifier_var, id_merged) {
   unique(dat[rows, ])
 }
 #' Find the intersection or union of all variable lists, based on
-#' \code{data_logic}
-merge_var <- function(var_list, data_logic) {
+#' \code{dataLogic}
+#' @param var_list A list of variable lists.
+#' @inheritParams extract_data
+merge_var <- function(var_list, dataLogic) {
   if (length(var_list) == 1) {
     id_merged <- as.list(var_list[[1]]$dat[, var_list[[1]]$identifier_var,
                                            with = FALSE])
@@ -592,12 +692,15 @@ merge_var <- function(var_list, data_logic) {
   for (i in 1:length(var_list)) {
     var_list[[i]]$cname2 <- cname_list2[[i]]
   }
-  var_m <- merge_data(data_list = var_list, data_logic = data_logic)
+  var_m <- merge_data(data_list = var_list, dataLogic = dataLogic)
   id_merged <- as.list(var_m[, unique(id_all), with = FALSE])
   id_merged <- lapply(id_merged, unique)
   list(var_list = var_list, data_merged = var_m,
        id_merged = id_merged, id_common = id_common)
 }
+#' Process variable list
+#' @inheritParams extract_data
+#' @inheritParams merge_inclu
 process_var <- function(research.folder, variable.xls.file,
                         inclu_list, overwrite, username = NA, password = NA) {
   if (all(is.na(variable.xls.file))) {
@@ -605,23 +708,23 @@ process_var <- function(research.folder, variable.xls.file,
   }
   id.no.keep <- NULL
   var_list <- lapply(seq_along(variable.xls.file), function(i) {
-    setting <- get_setting(research_folder = research.folder,
+    setting <- get_setting(research.folder = research.folder,
                            file = variable.xls.file[i])
     if (basename(setting$database) == "private_data") {
       setting$db <- "private"
     } else {
       setting$db <- "public"
     }
-    database <- database_full(research.folder, setting$db, setting$data_type)
+    database <- database_full(research.folder, setting$db, setting$data.type)
 
-    # Extract selected values of key_var and key_desc (if any)
-    var_names <- extract_key(research_folder = research.folder,
+    # Extract selected values of key.var and key.desc (if any)
+    var_names <- extract_key(research.folder = research.folder,
                              database = database[2],
                              file = variable.xls.file[i],
-                             key_var = "variable", type = "variable")
+                             key.var = "variable", type = "variable")
 
     # Load inclusion data
-    dat_full <- access_bridge(data_type = setting$data_type,
+    dat_full <- access_bridge(data.type = setting$data.type,
                               conn_string = setting$conn_string,
                               database = setting$database,
                               table_name = setting$table_name,
@@ -651,7 +754,7 @@ process_var <- function(research.folder, variable.xls.file,
     var_list[[i]]$other_var
   })))
   #identifier_var <- var_list[[1]]$identifier_var
-  var_list <- merge_var(var_list = var_list, data_logic = "Union")
+  var_list <- merge_var(var_list = var_list, dataLogic = "Union")
   # Summarise each variable in the merged data
   var_m <- var_list$data_merged
   if (nrow(var_m) == 0) {
@@ -682,12 +785,15 @@ process_var <- function(research.folder, variable.xls.file,
 
 # Summarise variable list -------------------------------------------------
 
+#' Summarise a continuous variable
+#' @param x Variable to summarise.
 summarise_cts <- function(x) {
   data.frame(N = sum(!is.na(x)), Group = NA,
              Summary = sprintf("%.2f (%.2f)",
                                mean(x, na.rm = TRUE), sd(x, na.rm = TRUE)),
              Type = "Mean(S.D.)")
 }
+#' @describeIn summarise_cts Summarise a continuous variable
 summarise_cat <- function(x) {
   if (all(is.na(x))) {
     data.frame(N = 0, Group = NA, Summary = sprintf("%d (%.1f%%)", NA, NA),
@@ -717,6 +823,10 @@ summarise_cat <- function(x) {
 # Write information to file -----------------------------------------------
 
 #' Check whether file exists and write file
+#' @param table Table to write to file.
+#' @param file Excel file to write.
+#' @param sheetName Name of Excel sheet to assign.
+#' @param overwrite Whether to overwrite existing file.
 #' @details No need to check \code{overwrite} when adding sheets to the file. In
 #'   this case, set it to \code{NULL}.
 write_to_file <- function(table, file, sheetName, overwrite = NULL) {
@@ -738,6 +848,9 @@ write_to_file <- function(table, file, sheetName, overwrite = NULL) {
   }
 }
 #' Write the list of unique identifiers to \code{csv}
+#' @param id_merged List of identifiers to write.
+#' @inheritParams access_bridge
+#' @inheritParams extract_data
 write_id <- function(id_merged, type, research.folder) {
   # type is either "inclusion" or "variable"
   # len_max <- max(unlist(lapply(id_merged, function(id) length(id))))
@@ -752,6 +865,8 @@ write_id <- function(id_merged, type, research.folder) {
   id_merged
 }
 #' Write a list of raw data to a group of \code{csv}
+#' @param data_list The list of data to write.
+#' @inheritParams write_id
 write_data_raw <- function(data_list, type, research.folder) {
   lapply(data_list, function(l) {
     dat <- l$dat

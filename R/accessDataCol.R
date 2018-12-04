@@ -1,50 +1,16 @@
-#' Converts factor columns to character
-#' @details This is needed because \code{ore.pull} automatically converts
-#'   character columns to factors.
-factor_to_char <- function(data) {
-  data[] <- lapply(data, function(x) {
-    if (is.factor(x)) {
-      as.character(x)
-    } else {
-      x
-    }
-  })
-}
-#' Flag message for successfully loading a table
-success_msg <- function(table_name, database, is_database = TRUE) {
-  if (is_database) {
-    message(simpleMessage(
-      paste("Table", table_name, "is extracted from database", database, "\n")
-    ))
-  } else {
-    message(simpleMessage(
-      paste("Table", table_name, "is loaded\n")
-    ))
-  }
-}
-#' Flag error for failing to find a table
-fail_error <- function(table_name, database, is_database = TRUE) {
-  if (is_database) {
-    stop(simpleError(
-      paste("Failed to find table", table_name, "in database", database, "\n")
-    ))
-  } else {
-    stop(simpleError(
-      paste("Failed to find table", table_name, "in", database, "folder\n")
-    ))
-  }
-}
 #' Functions to link to ORE database and extract column name
-#' @describeIn Linking to ORE database and extract column names of table in database
+#' @description Linking to ORE database and extract column names of table in
+#'   database.
+#' @inheritParams access_bridge
 access_ore_col <- function(conn_string, database, table_name, username, password) {
   if (!"ORE" %in% rownames(installed.packages())) {
     stop(simpleError(
       "ORE is not available. Please contact your IT administrator for help."
     ))
   }
-  library(ORE)
+  # library(ORE)
   con <- try(ore.connect(user = username, password = password,
-                         conn_string = conn_string, all = TRUE),
+                              conn_string = conn_string, all = TRUE),
              silent = TRUE)
   if (inherits(con, "try-error")) {
     stop(simpleError(
@@ -68,7 +34,7 @@ access_ore_col <- function(conn_string, database, table_name, username, password
   if (ore.exists(table_name,database)) {
     sttm <- sprintf("CREATE TABLE COLNAME AS SELECT COLUMN_NAME FROM ALL_TAB_COLUMNS where table_name= '%s'",table_name)
     ore.exec(sttm)
-    ore.sync(table="COLNAME")
+    ore.sync(table = "COLNAME")
     list <- as.character(ore.pull(COLNAME)[,1])
     ore.drop("COLNAME")
     ore.disconnect()
@@ -85,16 +51,19 @@ access_ore_col <- function(conn_string, database, table_name, username, password
   }
 }
 #' Functions to link to Oracle database and extract column name
-#' @describeIn Link to Oracle database and extract the column names of table in database.
+#' @describeIn access_ore_col Link to Oracle database and extract the column
+#'   names of table in database.
+#' @inheritParams access_bridge
 access_oracle_col <- function(database, table_name, username, password) {
   if (!"ROracle" %in% rownames(installed.packages())) {
     stop(simpleError(
       "ROracle is not available. Please contact your IT administrator for help."
     ))
   }
-  library(ROracle)
+  # library(ROracle)
   drv <- dbDriver("Oracle")
-  con <- try(dbConnect(drv = drv, username = username, password = password), silent = TRUE)
+  con <- try(dbConnect(drv = drv, username = username, password = password),
+             silent = TRUE)
   if (inherits(con, "try-error")) {
     stop(simpleError(
       "Access to Oracle failed. Please check `username`, `password` and `database` specified."
@@ -122,11 +91,14 @@ access_oracle_col <- function(database, table_name, username, password) {
   }
 }
 #' Functions to link to MySQL database and extract column name
-#' @describeIn Link to MySQL database and extract column names of table in database.
+#' @describeIn access_ore_col Link to MySQL database and extract column names of
+#'   table in database.
+#' @inheritParams access_bridge
+#' @import RMySQL
 access_mysql_col <- function(database, table_name, username, password) {
   table_name <- tolower(table_name)
-  con <- try(dbConnect(MySQL(), username = username, password = password,
-                       dbname = database),
+  con <- try(dbConnect(MySQL(), username = username,
+                               password = password, dbname = database),
              silent = TRUE)
   if (inherits(con, "try-error")) {
     stop(simpleError(
@@ -150,9 +122,10 @@ access_mysql_col <- function(database, table_name, username, password) {
   }
 }
 #' Functions to link to flat database and extract column name
-#' @describeIn Load column names of table (\code{character string})
-#' @param table_name The name of file to read in, including file extension.
-access_flat_col <- function(database, table_name, data_type) {
+#' @describeIn access_ore_col Load column names of table (\code{character
+#'   string}).
+#' @inheritParams access_bridge
+access_flat_col <- function(database, table_name, data.type) {
   if (!dir.exists(database)) {
     stop(simpleError("`database` should be the folder containing the flat table, which is either `public_data`, or the path to `private_data` relative to current working directory."))
   }
@@ -160,7 +133,7 @@ access_flat_col <- function(database, table_name, data_type) {
   if (!file.exists(table_file)) {
     fail_error(table_name, database, is_database = FALSE)
   }
-  dat <- switch(data_type,
+  dat <- switch(data.type,
                 rdata = get(load(table_file)),
                 #delim = data.table::fread(table_file),
                 csv = read.csv(table_file,header = TRUE, stringsAsFactors=FALSE),

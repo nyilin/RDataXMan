@@ -6,6 +6,9 @@
 \usage{
 replace_key_var(s)
 }
+\arguments{
+\item{s}{A string.}
+}
 \description{
 Replaces `*` in a string with digits 0 to 9
 }

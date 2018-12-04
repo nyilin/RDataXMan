@@ -133,7 +133,7 @@ extract_data <- function(wkdir = getwd(), research.folder = NA,
   # Extract data based on inclusion and variable lists
   inclu_list <- process_inclu(research.folder = research.folder,
                               inclusion.xls.file = inclusion.xls.file,
-                              data_logic = dataLogic, overwrite = overwrite,
+                              dataLogic = dataLogic, overwrite = overwrite,
                               username = username, password = password)
   if (length(variable.xls.file) > 0) {
     var_info <- process_var(research.folder = research.folder,

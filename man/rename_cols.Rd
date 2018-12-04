@@ -2,12 +2,18 @@
 % Please edit documentation in R/functions.R
 \name{rename_cols}
 \alias{rename_cols}
-\title{Rename non-key variables in a list of variable names if they appear multiple
-times in the list of variable names}
+\title{Rename column names}
 \usage{
 rename_cols(name_list, all_list = name_list, key_list)
 }
+\arguments{
+\item{name_list}{A list of variable names.}
+
+\item{all_list}{A larger list of variable names.}
+
+\item{key_list}{A list of identifier names. These should not be renamed.}
+}
 \description{
-Rename non-key variables in a list of variable names if they appear multiple
-times in the list of variable names
+Rename non-key variables in a list of variable names if they
+  appear multiple times in the list of variable names.
 }

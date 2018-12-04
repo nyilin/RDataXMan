@@ -6,6 +6,15 @@
 \usage{
 write_id(id_merged, type, research.folder)
 }
+\arguments{
+\item{id_merged}{List of identifiers to write.}
+
+\item{type}{To decide whether to extract column names (\code{vafiable}) or
+whole data.}
+
+\item{research.folder}{The name of research folder. See
+\code{\link{initResearchFolder}} for details on a research folder.}
+}
 \description{
 Write the list of unique identifiers to \code{csv}
 }

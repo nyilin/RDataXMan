@@ -6,6 +6,9 @@
 \usage{
 unzip(string)
 }
+\arguments{
+\item{string}{A comma-separated string.}
+}
 \description{
 Converts a comma-seperated string into a vector
 }

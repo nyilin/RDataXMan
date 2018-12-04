@@ -2,10 +2,24 @@
 % Please edit documentation in R/functions.R
 \name{check_type}
 \alias{check_type}
-\title{Check data_type and table_name}
+\title{Check data.type and table_name}
 \usage{
-check_type(table_name, data_type, database)
+check_type(table_name, data.type, database)
+}
+\arguments{
+\item{table_name}{The name of dataset. File extension must be included if the
+data is saved as a flat file instead of in a database, e.g. `data.csv`
+should be given instead of simply `data`.}
+
+\item{data.type}{\code{flat} for flat tables, \code{sql} fo rSQL database,
+\code{ore} for Oracle R Enterprise (ORE) database, and \code{oracle} for
+Oracle in SQL mode.}
+
+\item{database}{Name of database. Should be either \code{private} or
+\code{public} for flat tables, indicating whether data is stored in
+\code{public_data} or \code{research/[research folder]/private_data}, or
+the actual name of database if extracting data from a database.}
 }
 \description{
-Check data_type and table_name
+Check data.type and table_name
 }

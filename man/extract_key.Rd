@@ -4,7 +4,31 @@
 \alias{extract_key}
 \title{Read in inclusion and variable (wrapper)}
 \usage{
-extract_key(research_folder, database, file, key_var, key_desc = NA, type)
+extract_key(research.folder, database, file, key.var, key.desc = NA,
+  type)
+}
+\arguments{
+\item{research.folder}{The name of research folder. See
+\code{\link{initResearchFolder}} for details on a research folder.}
+
+\item{database}{Name of database. Should be either \code{private} or
+\code{public} for flat tables, indicating whether data is stored in
+\code{public_data} or \code{research/[research folder]/private_data}, or
+the actual name of database if extracting data from a database.}
+
+\item{file}{The inclusion or varible list.}
+
+\item{key.var}{The name of variable based on which inclusion criterion is
+specified. Vector with multiple elements is not allowed. To have complex
+inclusion criteria based on multiple variables, generate one request form
+for each variable.}
+
+\item{key.desc}{The name of variable(s) that describes \code{key.var}, if
+any. Multiple description variables should be specified as a character
+vector. Default is \code{NA}, where no description variable is selected.}
+
+\item{type}{To decide whether to extract column names (\code{vafiable}) or
+whole data.}
 }
 \description{
 Read in inclusion and variable (wrapper)

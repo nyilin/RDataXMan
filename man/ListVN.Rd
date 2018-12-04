@@ -2,30 +2,44 @@
 % Please edit documentation in R/ListName.R
 \name{ListVN}
 \alias{ListVN}
-\title{List all the variable names for specific table --------}
+\title{List all the variable names for specific table}
 \usage{
 ListVN(wkdir = getwd(), research.folder = NA, data.type = NA,
   database = NA, table_name = NA, conn_string = NA, username = NA,
   password = NA)
 }
 \arguments{
-\item{wkdir}{icharacter string with the whole work-directory}
+\item{wkdir}{The path to working directory. See \code{\link{initWkdir}} for
+details on a working directory.}
 
-\item{research.folder}{character string with the name of research folder, only use when your table saved in the private_data folder}
+\item{research.folder}{The name of research folder. See
+\code{\link{initResearchFolder}} for details on a research folder.}
 
-\item{data.type}{character string with data type including 'ore'/'oracle'/'sql'/'flat'.}
+\item{data.type}{\code{flat} for flat tables, \code{sql} fo rSQL database,
+\code{ore} for Oracle R Enterprise (ORE) database, and \code{oracle} for
+Oracle in SQL mode.}
 
-\item{database}{character string with the real schema name or 'public'/'private'.}
+\item{database}{Name of database. Should be either \code{private} or
+\code{public} for flat tables, indicating whether data is stored in
+\code{public_data} or \code{research/[research folder]/private_data}, or
+the actual name of database if extracting data from a database.}
 
-\item{conn_string}{character string only use when the data.type equal to 'ore'.}
+\item{table_name}{For database this is the name of table. For flat file this
+is the name of file to read in, including file extension.}
 
-\item{username}{character string only use when you need to access to server(i.e., ore,oracle,sql).}
+\item{conn_string}{Connection string for accessing ORE server. Default is
+\code{NA}.}
 
-\item{password}{character string only use when you need to access to server(i.e., ore,oracle,sql).}
+\item{username}{User name for accessing database if \code{data.type} is not
+\code{flat}. Default is \code{NA} for flat tables.}
+
+\item{password}{Password for accessing database if \code{data.type} is not
+\code{flat}. Default is \code{NA} for flat tables.}
 }
 \value{
-character vector includes all the table names based on the database choice.
+character vector includes all the table names based on the database
+  choice.
 }
 \description{
-List all the variable names for specific table --------
+List all the variable names for specific table
 }

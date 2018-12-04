@@ -176,7 +176,7 @@ In this section we use an example to illustrate how to select variables for the
 final output by filling up the sheet "overall list" of variable list in long or 
 short format.
 
-To select specific variables listed in `variable` (Column B), put an `x`in the 
+To select specific variables listed in `variable` (Column B), put an `x` in the 
 corresponding row in Column D, and leave Column D blank if a variable is not 
 wanted.
 

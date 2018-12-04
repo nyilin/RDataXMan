@@ -174,7 +174,7 @@ genInclusion <- function(wkdir = getwd(), research.folder = NA,
   }
 
   # Load data
-  dat0 <- access_bridge(data_type = data.type, conn_string = conn_string,
+  dat0 <- access_bridge(data.type = data.type, conn_string = conn_string,
                         database = database[1], table_name = table_name,
                         username = username, password = password,
                         type = "inclusion")

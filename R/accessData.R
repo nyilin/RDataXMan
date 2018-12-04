@@ -1,60 +1,13 @@
-#' Converts factor columns to character
-#' @details This is needed because \code{ore.pull} automatically converts
-#'   character columns to factors.
-factor_to_char <- function(data) {
-  data[] <- lapply(data, function(x) {
-    if (is.factor(x)) {
-      as.character(x)
-    } else {
-      x
-    }
-  })
-}
-#'   \code{ore.pull} automatically add time zone of Date type columns.
-time_to_char <- function(data) {
-  data[] <- lapply(data, function(x) {
-    if (inherits(x,c("POSIXt","POSIXct"))) {
-      as.character(x)
-    } else {
-      x
-    }
-  })
-}
-
-#' Flag message for successfully loading a table
-success_msg <- function(table_name, database, is_database = TRUE) {
-  if (is_database) {
-    message(simpleMessage(
-      paste("Table", table_name, "is extracted from database", database, "\n")
-    ))
-  } else {
-    message(simpleMessage(
-      paste("Table", table_name, "is loaded\n")
-    ))
-  }
-}
-#' Flag error for failing to find a table
-fail_error <- function(table_name, database, is_database = TRUE) {
-  if (is_database) {
-    stop(simpleError(
-      paste("Failed to find table", table_name, "in database", database, "\n")
-    ))
-  } else {
-    stop(simpleError(
-      paste("Failed to find table", table_name, "in", database, "folder\n")
-    ))
-  }
-}
-
 #' Functions to link to ORE database
 #' @describeIn Linking to ORE database
+#' @inheritParams access_bridge
 access_ore <- function(conn_string, database, table_name, username, password) {
   if (!"ORE" %in% rownames(installed.packages())) {
     stop(simpleError(
       "ORE is not available. Please contact your IT administrator for help."
     ))
   }
-  library(ORE)
+  # library(ORE)
   con <- try(ore.connect(user = username, password = password,
                          conn_string = conn_string, all = TRUE),
              silent = TRUE)
@@ -94,13 +47,14 @@ access_ore <- function(conn_string, database, table_name, username, password) {
 
 #' Functions to link to Oracle database
 #' @describeIn Link to Oracle database
+#' @inheritParams access_bridge
 access_oracle <- function(database, table_name, username, password) {
   if (!"ROracle" %in% rownames(installed.packages())) {
     stop(simpleError(
       "ROracle is not available. Please contact your IT administrator for help."
     ))
   }
-  library(ROracle)
+  # library(ROracle)
   drv <- dbDriver("Oracle")
   con <- try(dbConnect(drv = drv, username = username, password = password), silent = TRUE)
   if (inherits(con, "try-error")) {
@@ -125,6 +79,7 @@ access_oracle <- function(database, table_name, username, password) {
 
 #' Functions to link to MySQL database
 #' @describeIn Link to MySQL database
+#' @inheritParams access_bridge
 #' @import RMySQL
 access_mysql <- function(database, table_name, username, password) {
   table_name <- tolower(table_name)
@@ -153,7 +108,7 @@ access_mysql <- function(database, table_name, username, password) {
 
 #' Functions to link to flat database
 #' @describeIn Load R data (\code{.RData})
-#' @param table_name The name of file to read in, including file extension.
+#' @inheritParams access_bridge
 #' @details Request forms are read in with xlsx::read.xlsx, which reads in ICD
 #'   codes as charactor. Functions to read in data should read ICD codes as
 #'   character as well in optimal cases.
@@ -164,7 +119,7 @@ access_mysql <- function(database, table_name, username, password) {
 #'   \code{haven::read_dta} and \code{haven::read_sav} reads ICD as numeric,
 #'   then we cannot do anything about it. (In simulated data it is still
 #'   character)
-access_flat <- function(database, table_name, data_type) {
+access_flat <- function(database, table_name, data.type) {
   if (!dir.exists(database)) {
     stop(simpleError("`database` should be the folder containing the flat table, which is either `public_data`, or the path to `private_data` relative to current working directory."))
   }
@@ -172,7 +127,7 @@ access_flat <- function(database, table_name, data_type) {
   if (!file.exists(table_file)) {
     fail_error(table_name, database, is_database = FALSE)
   }
-  dat <- switch(data_type,
+  dat <- switch(data.type,
                 rdata = get(load(table_file)),
                 csv = read.csv(table_file,header = TRUE,
                                stringsAsFactors = FALSE),

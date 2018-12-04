@@ -3,11 +3,17 @@
 \name{merge_var}
 \alias{merge_var}
 \title{Find the intersection or union of all variable lists, based on
-\code{data_logic}}
+\code{dataLogic}}
 \usage{
-merge_var(var_list, data_logic)
+merge_var(var_list, dataLogic)
+}
+\arguments{
+\item{var_list}{A list of variable lists.}
+
+\item{dataLogic}{Whether to take \code{union} or \code{intersection} of
+inclusion criteria, if multiple criteria specified. Default is \code{NA}.}
 }
 \description{
 Find the intersection or union of all variable lists, based on
-\code{data_logic}
+\code{dataLogic}
 }

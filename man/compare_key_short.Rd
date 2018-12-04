@@ -2,10 +2,18 @@
 % Please edit documentation in R/functions.R
 \name{compare_key_short}
 \alias{compare_key_short}
-\title{Write a table to compare key_var and key_desc for short version inclusion}
+\title{Write a table to compare key.var and key.desc for short version inclusion}
 \usage{
-compare_key_short(setting, key)
+compare_key_short(setting, key, dat)
+}
+\arguments{
+\item{setting}{List of settings produced using \code{get_setting}.}
+
+\item{key}{List of information on key variable produced using
+\code{extract_key}.}
+
+\item{dat}{A data frame.}
 }
 \description{
-Write a table to compare key_var and key_desc for short version inclusion
+Write a table to compare key.var and key.desc for short version inclusion
 }

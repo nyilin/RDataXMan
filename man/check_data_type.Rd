@@ -4,10 +4,15 @@
 \alias{check_data_type}
 \title{Checks whether input data type is supported}
 \usage{
-check_data_type(data_type)
+check_data_type(data.type)
+}
+\arguments{
+\item{data.type}{\code{flat} for flat tables, \code{sql} fo rSQL database,
+\code{ore} for Oracle R Enterprise (ORE) database, and \code{oracle} for
+Oracle in SQL mode.}
 }
 \value{
-Returns \code{data_type} except for \code{xls} and \code{xlsx}, in
+Returns \code{data.type} except for \code{xls} and \code{xlsx}, in
   which case \code{excel} is returned instead because both types of files
   share the same function for importing data.
 }
