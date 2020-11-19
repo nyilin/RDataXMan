@@ -4,8 +4,15 @@
 \alias{ListTN}
 \title{List all the table names the user can access}
 \usage{
-ListTN(wkdir = getwd(), database = NA, research.folder = NA,
-  data.type = NA, conn_string = NA, username = NA, password = NA)
+ListTN(
+  wkdir = getwd(),
+  database = NA,
+  research.folder = NA,
+  data.type = NA,
+  conn_string = NA,
+  username = NA,
+  password = NA
+)
 }
 \arguments{
 \item{wkdir}{The path to working directory. See \code{\link{initWkdir}} for
@@ -19,12 +26,7 @@ the actual name of database if extracting data from a database.}
 \item{research.folder}{The name of research folder. See
 \code{\link{initResearchFolder}} for details on a research folder.}
 
-\item{data.type}{\code{flat} for flat tables, \code{sql} fo rSQL database,
-\code{ore} for Oracle R Enterprise (ORE) database, and \code{oracle} for
-Oracle in SQL mode.}
-
-\item{conn_string}{Connection string for accessing ORE server. Default is
-\code{NA}.}
+\item{data.type}{\code{flat} for flat tables and \code{sql} fo MySQL database.}
 
 \item{username}{User name for accessing database if \code{data.type} is not
 \code{flat}. Default is \code{NA} for flat tables.}

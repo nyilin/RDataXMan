@@ -4,8 +4,7 @@
 \alias{extract_key}
 \title{Read in inclusion and variable (wrapper)}
 \usage{
-extract_key(research.folder, database, file, key.var, key.desc = NA,
-  type)
+extract_key(research.folder, database, file, key.var, key.desc = NA, type)
 }
 \arguments{
 \item{research.folder}{The name of research folder. See

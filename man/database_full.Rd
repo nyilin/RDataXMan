@@ -15,9 +15,7 @@ database_full(research.folder, database, data.type)
 \code{public_data} or \code{research/[research folder]/private_data}, or
 the actual name of database if extracting data from a database.}
 
-\item{data.type}{\code{flat} for flat tables, \code{sql} fo rSQL database,
-\code{ore} for Oracle R Enterprise (ORE) database, and \code{oracle} for
-Oracle in SQL mode.}
+\item{data.type}{\code{flat} for flat tables and \code{sql} fo MySQL database.}
 }
 \description{
 Make the database to a full database

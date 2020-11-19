@@ -33,12 +33,6 @@
 #'   \code{flat}. Default is \code{NA} for flat tables.
 #' @param conn_string Connection string for accessing ORE server. Default is
 #'   \code{NA}.
-#' @import xlsx
-#' @import readxl
-#' @import RMySQL
-#' @import haven
-#' @import data.table
-#' @import stringr
 #' @examples
 #' \dontrun{
 #' extract_data(wkdir = "Working directory", research.folder = "requestnum001",
@@ -53,12 +47,13 @@
 #'   \code{summary.xls} is returned. The \code{summary.xls} will includes count
 #'   summary sheet and variable summary sheet.
 #' @seealso \code{\link{genInclusion}}, \code{\link{genVariable}}
+#' @import xlsx
+#' @import readxl
 #' @export
 extract_data <- function(wkdir = getwd(), research.folder = NA,
                          inclusion.xls.file = NA, variable.xls.file = NA,
                          database = NA, dataLogic = NA, select.output = NA,
-                         overwrite = TRUE, username = NA, password = NA,
-                         conn_string = NA) {
+                         overwrite = TRUE, username = NA, password = NA) {
   ## change "" input to NA.
   research.folder <- check_input(research.folder)
   inclusion.xls.file <- check_input(inclusion.xls.file)
@@ -68,7 +63,6 @@ extract_data <- function(wkdir = getwd(), research.folder = NA,
   select.output <- check_input(select.output)
   username <- check_input(username)
   password <- check_input(password)
-  conn_string <- check_input(conn_string)
   ##== check that the arguments are correctly specified:
   research.folder <- research.folder[1]
   if (is.na(research.folder)) {
@@ -161,13 +155,13 @@ extract_data <- function(wkdir = getwd(), research.folder = NA,
   if ("3" %in% select.output) {
     # If only 1 inclusion criteria, and extraction-option==TRUE, we remove extraction for inclusion as the information is exactly
     # the same as merge_inclusioin
-    if("4" %in% select.output && length(inclusion.xls.file)==1){
+    if ("4" %in% select.output && length(inclusion.xls.file) == 1) {
       message(simpleMessage(
         paste("Only 1 inclusion criteria:", paste(inclusion.xls.file),
               "be selected.\n",
               "Extraction for inclusion is the same as merge_inclusion. \n")
-        ))
-    }else{
+      ))
+    } else {
       # Write raw data by inclusion and variable list
       output$raw.extract.dat$inc <- write_data_raw(
         data_list = inclu_list$inclu_list,
@@ -175,18 +169,16 @@ extract_data <- function(wkdir = getwd(), research.folder = NA,
         research.folder = research.folder
       )
     }
-
-
     if (!is.null(var_info)) {
       # If only 1 variable list, and extraction-option==TRUE, we remove extraction for variable as the information is exactly
       # the same as merge_dat
-      if("4" %in% select.output && length(variable.xls.file)==1){
+      if ("4" %in% select.output && length(variable.xls.file) == 1) {
         message(simpleMessage(
           paste("Only 1 variable list:", paste(variable.xls.file),
                 " be selected.\n",
                 "Extraction for variable is the same as merge_dat. \n")
         ))
-      }else{
+      } else {
         output$raw.extract.dat$var <- write_data_raw(
           data_list = var_info$var_list$var_list,
           type = "variable",
@@ -199,15 +191,15 @@ extract_data <- function(wkdir = getwd(), research.folder = NA,
     # Write merged data based on dataLogic
     output$merge.extract.dat$inc <- inclu_list$data_merged
     write.csv(inclu_list$data_merged,
-              file = paste0("research/", research.folder,
-                            "/request_output/merge_inclusion.csv"),
-              row.names = FALSE, na="")
+              file = file.path("research", research.folder, "request_output",
+                               "merge_inclusion.csv"),
+              row.names = FALSE, na = "")
     if (!is.null(var_info) & nrow(var_info$var_list$data_merged) > 0) {
       output$merge.extract.dat$var <- var_info$var_list$data_merged
       write.csv(var_info$var_list$data_merged,
-                file = paste0("research/", research.folder,
-                              "/request_output/merge_dat.csv",na=""),
-                row.names = FALSE)
+                file = file.path("research", research.folder, "request_output",
+                                 "merge_dat.csv"),
+                na = "", row.names = FALSE)
     }
   }
   if ("2" %in% select.output) {
@@ -218,6 +210,8 @@ extract_data <- function(wkdir = getwd(), research.folder = NA,
         "The content you want to write into excel is too big."
       ))
     }
+    file <- file.path("research", research.folder, "request_output",
+                      "summary_list.xlsx")
     if (all(is.na(variable.xls.file))) {
       # file <- paste0(
       #   "research/", research.folder, "/request_output/",
@@ -225,7 +219,6 @@ extract_data <- function(wkdir = getwd(), research.folder = NA,
       #         collapse = ","),
       #   "_summary.xlsx"
       # )
-      file <- paste0("research/", research.folder, "/request_output/summary_list.xlsx")
       setting <- data.frame(
         Argument = c("inclusion criterion", "variable list", "wkdir",
                      "research.folder"),
@@ -240,9 +233,6 @@ extract_data <- function(wkdir = getwd(), research.folder = NA,
       #         collapse = ","),
       #   "_with variable list_summary.xlsx"
       # )
-      file <- paste0(
-        "research/",research.folder,"/request_output/summary_list.xlsx"
-      )
       setting <- data.frame(
         Argument = c("inclusion criterion", "variable list", "dataLogic",
                      "wkdir", "research.folder"),
@@ -254,9 +244,9 @@ extract_data <- function(wkdir = getwd(), research.folder = NA,
     }
     write_to_file(table = setting, sheetName = "argument list", file = file,
                   overwrite = overwrite)
-    xlsx::write.xlsx(c_inclu$count_all, file = file,
-                     sheetName = "inclusion_count_overall",
-                     row.names = FALSE, append = TRUE, showNA = FALSE)
+    write.xlsx(c_inclu$count_all, file = file,
+               sheetName = "inclusion_count_overall",
+               row.names = FALSE, append = TRUE, showNA = FALSE)
     if (!is.null(c_inclu$count_key)) {
       lapply(1:length(c_inclu$count_key), function(i) {
         # Do not need to check overwrite now
@@ -265,9 +255,9 @@ extract_data <- function(wkdir = getwd(), research.folder = NA,
       })
     }
     if (!is.null(var_info) & !is.null(var_info$var_summ)) {
-      xlsx::write.xlsx(var_info$var_summ, file = file,
-                       sheetName = "variable_summary",
-                       row.names = FALSE, append = TRUE, showNA = FALSE)
+      write.xlsx(var_info$var_summ, file = file,
+                 sheetName = "variable_summary",
+                 row.names = FALSE, append = TRUE, showNA = FALSE)
     }else{
       warning(simpleWarning("No data extracted with inclusion criteria specified.\n"))
     }

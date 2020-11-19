@@ -4,8 +4,14 @@
 \alias{process_inclu}
 \title{Processing request form}
 \usage{
-process_inclu(research.folder, inclusion.xls.file, dataLogic, overwrite,
-  username = NA, password = NA)
+process_inclu(
+  research.folder,
+  inclusion.xls.file,
+  dataLogic,
+  overwrite,
+  username = NA,
+  password = NA
+)
 }
 \arguments{
 \item{research.folder}{The name of research folder. See

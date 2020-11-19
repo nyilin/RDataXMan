@@ -4,9 +4,16 @@
 \alias{ListVN}
 \title{List all the variable names for specific table}
 \usage{
-ListVN(wkdir = getwd(), research.folder = NA, data.type = NA,
-  database = NA, table_name = NA, conn_string = NA, username = NA,
-  password = NA)
+ListVN(
+  wkdir = getwd(),
+  research.folder = NA,
+  data.type = NA,
+  database = NA,
+  table_name = NA,
+  conn_string = NA,
+  username = NA,
+  password = NA
+)
 }
 \arguments{
 \item{wkdir}{The path to working directory. See \code{\link{initWkdir}} for
@@ -15,9 +22,7 @@ details on a working directory.}
 \item{research.folder}{The name of research folder. See
 \code{\link{initResearchFolder}} for details on a research folder.}
 
-\item{data.type}{\code{flat} for flat tables, \code{sql} fo rSQL database,
-\code{ore} for Oracle R Enterprise (ORE) database, and \code{oracle} for
-Oracle in SQL mode.}
+\item{data.type}{\code{flat} for flat tables and \code{sql} fo MySQL database.}
 
 \item{database}{Name of database. Should be either \code{private} or
 \code{public} for flat tables, indicating whether data is stored in
@@ -26,9 +31,6 @@ the actual name of database if extracting data from a database.}
 
 \item{table_name}{For database this is the name of table. For flat file this
 is the name of file to read in, including file extension.}
-
-\item{conn_string}{Connection string for accessing ORE server. Default is
-\code{NA}.}
 
 \item{username}{User name for accessing database if \code{data.type} is not
 \code{flat}. Default is \code{NA} for flat tables.}
