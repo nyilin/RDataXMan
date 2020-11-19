@@ -4,10 +4,18 @@
 \alias{extract_data}
 \title{Extract data by users' requirements.}
 \usage{
-extract_data(wkdir = getwd(), research.folder = NA,
-  inclusion.xls.file = NA, variable.xls.file = NA, database = NA,
-  dataLogic = NA, select.output = NA, overwrite = TRUE,
-  username = NA, password = NA, conn_string = NA)
+extract_data(
+  wkdir = getwd(),
+  research.folder = NA,
+  inclusion.xls.file = NA,
+  variable.xls.file = NA,
+  database = NA,
+  dataLogic = NA,
+  select.output = NA,
+  overwrite = TRUE,
+  username = NA,
+  password = NA
+)
 }
 \arguments{
 \item{wkdir}{The path to working directory. See \code{\link{initWkdir}} for

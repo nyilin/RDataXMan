@@ -7,9 +7,7 @@
 check_data_type(data.type)
 }
 \arguments{
-\item{data.type}{\code{flat} for flat tables, \code{sql} fo rSQL database,
-\code{ore} for Oracle R Enterprise (ORE) database, and \code{oracle} for
-Oracle in SQL mode.}
+\item{data.type}{\code{flat} for flat tables and \code{sql} fo MySQL database.}
 }
 \value{
 Returns \code{data.type} except for \code{xls} and \code{xlsx}, in

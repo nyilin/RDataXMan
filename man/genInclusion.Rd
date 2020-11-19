@@ -4,10 +4,20 @@
 \alias{genInclusion}
 \title{Generate inclusion criterion}
 \usage{
-genInclusion(wkdir = getwd(), research.folder = NA, table_name = NA,
-  data.type = NA, database = NA, key.var = NA, key.desc = NA,
-  identifier.var = NA, count = NA, overwrite = TRUE, username = NA,
-  password = NA, conn_string = NA)
+genInclusion(
+  wkdir = getwd(),
+  research.folder = NA,
+  table_name = NA,
+  data.type = NA,
+  database = NA,
+  key.var = NA,
+  key.desc = NA,
+  identifier.var = NA,
+  count = NA,
+  overwrite = TRUE,
+  username = NA,
+  password = NA
+)
 }
 \arguments{
 \item{wkdir}{The path to working directory. See \code{\link{initWkdir}} for
@@ -17,12 +27,10 @@ details on a working directory.}
 \code{\link{initResearchFolder}} for details on a research folder.}
 
 \item{table_name}{The name of dataset. File extension must be included if the
-data is saved as a flat file instead of in a database, e.g. `data.csv`
+data is saved as a flat file instead of in a database, e.g., `data.csv`
 should be given instead of simply `data`.}
 
-\item{data.type}{\code{flat} for flat tables, \code{sql} fo rSQL database,
-\code{ore} for Oracle R Enterprise (ORE) database, and \code{oracle} for
-Oracle in SQL mode.}
+\item{data.type}{\code{flat} for flat tables and \code{sql} fo MySQL database.}
 
 \item{database}{Name of database. Should be either \code{private} or
 \code{public} for flat tables, indicating whether data is stored in
@@ -55,9 +63,6 @@ vector.}
 
 \item{password}{Password for accessing database if \code{data.type} is not
 \code{flat}. Default is \code{NA} for flat tables.}
-
-\item{conn_string}{Connection string for accessing ORE server. Default is
-\code{NA}.}
 }
 \value{
 Returns the name of inclusion criteria generated. See \code{details}.

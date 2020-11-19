@@ -4,16 +4,10 @@
 \alias{access_bridge}
 \title{Wrapper function to link to data}
 \usage{
-access_bridge(data.type, conn_string, database, table_name, username,
-  password, type = NA)
+access_bridge(data.type, database, table_name, username, password, type = NA)
 }
 \arguments{
-\item{data.type}{\code{flat} for flat tables, \code{sql} fo rSQL database,
-\code{ore} for Oracle R Enterprise (ORE) database, and \code{oracle} for
-Oracle in SQL mode.}
-
-\item{conn_string}{Connection string for accessing ORE server. Default is
-\code{NA}.}
+\item{data.type}{\code{flat} for flat tables and \code{sql} fo MySQL database.}
 
 \item{database}{Name of database. Should be either \code{private} or
 \code{public} for flat tables, indicating whether data is stored in
@@ -34,8 +28,8 @@ should be given instead of simply `data`.}
 whole data.}
 }
 \value{
-Returns the linked data (as \code{data.table}), connection string
-  (\code{conn_string} for ORE database) and name of database or flat table.
+Returns the linked data (as \code{data.table}) and name of database
+  or flat table.
 }
 \description{
 Wrapper function to link to data

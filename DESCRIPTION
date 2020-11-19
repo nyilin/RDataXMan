@@ -1,9 +1,9 @@
 Package: RDataXMan
 Type: Package
 Title: Data Extraction Management
-Version: 1.0.11
+Version: 1.1.0
 Author: Tan Chuen Seng, Sun Yinxiaohe, Mark Kevin Salloway, Ning Yilin
-Maintainer: Sun Yinxiaohe <ephsy@nus.edu.sg>
+Maintainer: Ning Yilin <ningyilinnyl@gmail.com>
 Description: An R package for research reproducibility in data extraction 
   management. Refer to the User Manual from 
   http://blog.nus.edu.sg/dasa/rdataxman/ for instruction on installation and 
@@ -11,15 +11,15 @@ Description: An R package for research reproducibility in data extraction
 License: SSHSPH ACADEMIC NON-COMMERCIAL SOFTWARE LICENSE AGREEMENT
 URL: http://blog.nus.edu.sg/dasa/rdataxman/
 LazyData: TRUE
-RoxygenNote: 6.1.1
-Depends: R (>= 3.2.0)
+RoxygenNote: 7.1.1
 Imports:
-    RMySQL (>= 0.10.11),
+    RMariaDB,
+    DBI (>= 1.1.0),
     data.table (>= 1.9.6),
     haven (>= 1.0.0),
     stringr (>= 1.2.0),
     xlsx (>= 0.5.7),
-	readxl (>= 1.0.0)
+	  readxl (>= 1.0.0)
 Suggests:
     knitr,
     rmarkdown

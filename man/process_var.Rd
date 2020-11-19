@@ -4,8 +4,14 @@
 \alias{process_var}
 \title{Process variable list}
 \usage{
-process_var(research.folder, variable.xls.file, inclu_list, overwrite,
-  username = NA, password = NA)
+process_var(
+  research.folder,
+  variable.xls.file,
+  inclu_list,
+  overwrite,
+  username = NA,
+  password = NA
+)
 }
 \arguments{
 \item{research.folder}{The name of research folder. See

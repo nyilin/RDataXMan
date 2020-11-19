@@ -4,10 +4,18 @@
 \alias{genVariable}
 \title{Generate variable list.}
 \usage{
-genVariable(wkdir = getwd(), research.folder = NA, table_name = NA,
-  data.type = NA, database = NA, identifier.var = NA,
-  omit.var = NA, overwrite = TRUE, username = NA, password = NA,
-  conn_string = NA)
+genVariable(
+  wkdir = getwd(),
+  research.folder = NA,
+  table_name = NA,
+  data.type = NA,
+  database = NA,
+  identifier.var = NA,
+  omit.var = NA,
+  overwrite = TRUE,
+  username = NA,
+  password = NA
+)
 }
 \arguments{
 \item{wkdir}{The path to working directory. See \code{\link{initWkdir}} for
@@ -20,9 +28,7 @@ details on a working directory.}
 data is saved as a flat file instead of in a database, e.g. `data.csv`
 should be given instead of simply `data`.}
 
-\item{data.type}{\code{flat} for flat tables, \code{sql} fo rSQL database,
-\code{ore} for Oracle R Enterprise (ORE) database, and \code{oracle} for
-Oracle in SQL mode.}
+\item{data.type}{\code{flat} for flat tables and \code{sql} fo MySQL database.}
 
 \item{database}{Name of database. Should be either \code{private} or
 \code{public} for flat tables, indicating whether data is stored in
@@ -47,9 +53,6 @@ Default is \code{NA}.}
 
 \item{password}{Password for accessing database if \code{data.type} is not
 \code{flat}. Default is \code{NA} for flat tables.}
-
-\item{conn_string}{Connection string for accessing ORE server. Default is
-\code{NA}.}
 }
 \value{
 Returns the name of variable list generated. See \code{details}.

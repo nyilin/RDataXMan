@@ -16,9 +16,7 @@ the actual name of database if extracting data from a database.}
 data is saved as a flat file instead of in a database, e.g. `data.csv`
 should be given instead of simply `data`.}
 
-\item{data.type}{\code{flat} for flat tables, \code{sql} fo rSQL database,
-\code{ore} for Oracle R Enterprise (ORE) database, and \code{oracle} for
-Oracle in SQL mode.}
+\item{data.type}{\code{flat} for flat tables and \code{sql} fo MySQL database.}
 }
 \description{
 Functions to link to flat database
