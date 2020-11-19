@@ -1,9 +1,30 @@
-## RDataXMan Software Requirements for Apple Mac Computers
+Overview
+--------
 
-For installation of the software on Apple computers running OS X please follow the steps before attempting to install RDataXMan
+Before installing the RDataXMan package, please make sure the latest
+version of Oracle Java JDK has been installed:
 
-1. Install the latest version of Oracle Java JDK from https://www.oracle.com/technetwork/java/javase/downloads/index.html
-2. Open the terminal and type the following commands:  
-    a. `sudo R CMD javareconf –n`  
-    b. `sudo ln -s $(/usr/libexec/java_home)/jre/lib/server/libjvm.dylib /usr/local/lib`  
-3. Install package `rJava` from CRAN
+1.  Go to
+    <a href="https://www.oracle.com/java/technologies/javase-jdk15-downloads.html" class="uri">https://www.oracle.com/java/technologies/javase-jdk15-downloads.html</a>
+2.  Go to the download page for the installer of latest Java JDK by
+    following the “JDK Download” link.
+3.  Download the appropriate installer.
+    -   Windows users should choose “Windows x64 Installer”.
+    -   macOS users should choose “macOS Installer”.
+
+After successfully installing Java JDK, macOS users need to open the
+terminal and execute the following commands to configure the path to
+Java:
+
+    sudo R CMD javareconf –n
+    sudo ln -s $(/usr/libexec/java_home)/jre/lib/server/libjvm.dylib /usr/local/lib
+
+After the steps above, both Windows and macOS users can use the
+following code to first install the rJava package from CRAN and then
+install the RDataXMan package from GitHub repository:
+
+    install.packages("rJava")
+    # dev.tools package needed to install from GitHub
+    # install.packages("devtools")
+    library(devtools)
+    install_github("nyilin/RDataXMan")
