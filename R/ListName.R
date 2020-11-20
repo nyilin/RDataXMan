@@ -1,5 +1,5 @@
 #' List file name, table name and variable name of specific table
-#' @description List all the file names of inclusion criteria or varaibles list.
+#' @description List all the file names of inclusion criteria or variables list.
 #' @inheritParams genVariable
 #' @param mode character string to indicate whether list file names of inclusion
 #'   criteria file or variable list.
