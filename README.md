@@ -12,19 +12,17 @@ version of Oracle Java JDK has been installed:
     -   Windows users should choose “Windows x64 Installer”.
     -   macOS users should choose “macOS Installer”.
 
-After successfully installing Java JDK, macOS users need to open the
-terminal and execute the following commands to configure the path to
-Java:
+After successfully installing Java JDK, macOS users need to configure Java by 
+executing the following commands in the Terminal:
 
     sudo R CMD javareconf –n
     sudo ln -s $(/usr/libexec/java_home)/jre/lib/server/libjvm.dylib /usr/local/lib
 
 After the steps above, both Windows and macOS users can use the
 following code to first install the rJava package from CRAN and then
-install the RDataXMan package from GitHub repository:
+install the RDataXMan package from GitHub:
 
     install.packages("rJava")
-    # dev.tools package needed to install from GitHub
+    # Package devtools is needed to install from GitHub
     # install.packages("devtools")
-    library(devtools)
-    install_github("nyilin/RDataXMan")
+    devtools::install_github("nyilin/RDataXMan")
