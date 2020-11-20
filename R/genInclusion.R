@@ -145,7 +145,7 @@ genInclusion <- function(wkdir = getwd(), research.folder = NA,
     # if(stringr::str_extract(database,"private")%in%"private"){
     #   template_folder <- file.path("research", research.folder, template_folder)
     # }
-  }else{
+  } else {
     # data.type is ORE, Oracle and SQL, the template_folder is "public_data_template".
     template_folder <- "public_data_template"
   }
@@ -245,7 +245,8 @@ genInclusion <- function(wkdir = getwd(), research.folder = NA,
     ))
     v <- na.omit(c(key.var, key.desc))
     inc_unique <- unique(dat[, c(v, identifier.var[1]), with = FALSE])
-    inc_unique <- cbind(inc_unique[, with = FALSE], n = 1)
+    inc_unique[, n := 1]
+    # inc_unique <- cbind(inc_unique[, with = FALSE], n = 1)
     nc <- ncol(inc_unique)
     inc_count <- aggregate(
       as.formula(paste("n ~", paste(v, collapse = " + "))),
@@ -262,7 +263,8 @@ genInclusion <- function(wkdir = getwd(), research.folder = NA,
         ))
         v <- na.omit(c(key.var, key.desc))
         inc_unique <- unique(dat[, c(v, identifier.var[i]), with = FALSE])
-        inc_unique <- cbind(inc_unique[, with = FALSE], n = 1)
+        inc_unique[, n := 1]
+        # inc_unique <- cbind(inc_unique[, with = FALSE], n = 1)
         nc <- ncol(inc_unique)
         inc_count_i <- aggregate(
           as.formula(paste("n ~", paste(v, collapse = " + "))),

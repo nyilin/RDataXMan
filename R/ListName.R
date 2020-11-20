@@ -66,10 +66,12 @@ list_TN_mysql <- function(database, username, password) {
   }
   sttm = sprintf("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
                  WHERE TABLE_TYPE='BASE TABLE' AND TABLE_SCHEMA= '%s'", database)
-  list <- fetch(dbSendQuery(con, statement = sttm))
-  list <- list[,1]
-  return(list)
+  res <- dbSendQuery(con, statement = sttm)
+  list <- dbFetch(res = res)
+  list <- list[, 1]
+  dbClearResult(res = res)
   dbDisconnect(con)
+  return(list)
 }
 #' Functions to link to flat database and extract column name
 #' @describeIn list_TN_mysql Link to flat database and extract column names of
@@ -150,14 +152,16 @@ list_VN_mysql <- function(database, table_name, username, password) {
   if (dbExistsTable(con, table_name, schema = database)) {
     sttm = sprintf("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = '%s' AND TABLE_NAME = '%s'", database, table_name)
     res <- dbSendQuery(con, statement = sttm)
-    dat <- t(fetch(res = res))
-    list <- dat[1,]
+    dat <- t(dbFetch(res = res))
+    list <- dat[1, ]
     success_msg(table_name, database)
+    dbClearResult(res = res)
+    dbDisconnect(con)
     return(list)
   } else {
+    dbDisconnect(con)
     fail_error(table_name, database)
   }
-  dbDisconnect(con)
 }
 #' Functions to link to flat database and extract column name
 #' @describeIn list_VN_mysql Link to flat tables and extract column names.

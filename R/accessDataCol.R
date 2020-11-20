@@ -25,7 +25,7 @@ access_mysql_col <- function(database, table_name, username, password) {
     success_msg(table_name, database)
     dbClearResult(res = res)
     dbDisconnect(con)
-    return(dat[1,])
+    return(dat[1, ])
   } else {
     dbDisconnect(con)
     fail_error(table_name, database)
