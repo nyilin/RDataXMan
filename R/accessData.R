@@ -31,7 +31,7 @@ access_mysql <- function(database, table_name, username, password) {
 #' @describeIn Load R data (\code{.RData})
 #' @inheritParams access_bridge
 #' @details Request forms are read in with xlsx::read.xlsx, which reads in ICD
-#'   codes as charactor. Functions to read in data should read ICD codes as
+#'   codes as character. Functions to read in data should read ICD codes as
 #'   character as well in optimal cases.
 #'
 #'   Cannot use data.table::fread because it does not work with R version 3.2.0.

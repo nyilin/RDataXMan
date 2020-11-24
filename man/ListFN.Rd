@@ -21,5 +21,5 @@ character vector includes all the file names based on the mode
   choice.
 }
 \description{
-List all the file names of inclusion criteria or varaibles list.
+List all the file names of inclusion criteria or variables list.
 }

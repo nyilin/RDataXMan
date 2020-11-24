@@ -173,7 +173,7 @@ genInclusion <- function(wkdir = getwd(), research.folder = NA,
                         type = "inclusion")
   dat <- dat0$dat
   database <- dat0$database
-  # Check whether identifier varible is the varaible in inc.dat
+  # Check whether identifier variable is the variable in inc.dat
   if (!all(identifier.var %in% colnames(dat))) {
     warning(simpleWarning(
       "`identifier.var` should be column name in the data table."

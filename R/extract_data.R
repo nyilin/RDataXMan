@@ -194,7 +194,7 @@ extract_data <- function(wkdir = getwd(), research.folder = NA,
               file = file.path("research", research.folder, "request_output",
                                "merge_inclusion.csv"),
               row.names = FALSE, na = "")
-    if (!is.null(var_info) & nrow(var_info$var_list$data_merged) > 0) {
+    if (!is.null(var_info) && nrow(var_info$var_list$data_merged) > 0) {
       output$merge.extract.dat$var <- var_info$var_list$data_merged
       write.csv(var_info$var_list$data_merged,
                 file = file.path("research", research.folder, "request_output",
@@ -254,7 +254,7 @@ extract_data <- function(wkdir = getwd(), research.folder = NA,
                       file = file, sheetName = paste0("inclusion_count_", i))
       })
     }
-    if (!is.null(var_info) & !is.null(var_info$var_summ)) {
+    if (!is.null(var_info) && !is.null(var_info$var_summ)) {
       write.xlsx(var_info$var_summ, file = file,
                  sheetName = "variable_summary",
                  row.names = FALSE, append = TRUE, showNA = FALSE)
