@@ -19,10 +19,8 @@ executing the following commands in the Terminal:
     sudo ln -s $(/usr/libexec/java_home)/jre/lib/server/libjvm.dylib /usr/local/lib
 
 After the steps above, both Windows and macOS users can use the
-following code to first install the rJava package from CRAN and then
-install the RDataXMan package from GitHub:
+following code to install the RDataXMan package from GitHub:
 
-    install.packages("rJava")
     # Package devtools is needed to install from GitHub
     # install.packages("devtools")
     devtools::install_github("nyilin/RDataXMan")
