@@ -8,6 +8,8 @@ The RDataXMan package and the [R Commander plug-in](https://github.com/nyilin/Rc
 Installation
 ------------
 
+Please read the user manual (**"User Manual.pdf"**) for detailed instructions.
+
 Installation of RDataXMan requires the installation of Java JDK:
 
 1.  Go to https://www.oracle.com/technetwork/java/javase/downloads/index.html
