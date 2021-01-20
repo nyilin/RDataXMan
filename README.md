@@ -3,8 +3,7 @@ Overview
 
 RDataXMan (**R** **D**ata e**X**traction **M**anagement) is an Open Source tool built using the R language, with the capability to assist users perform reproducible extractions of datasets using a simple to use template approach. The R package is a used in conjunction with a user-friendly graphical user interface (GUI) based on the R Commander framework that assists the user from the identification of data or columns, to the full extraction of research data. Our aim in the development of this tool was to lower the barrier of entry and speed up efforts to access a variety of data sources for research, while promoting reproducibility and minimizing the risk of data extraction variation. 
 
-The RDataXMan package and the [R Commander plug-in](https://github.com/nyilin/RcmdrPlugin.RDataXMan) are free under an academic non-commercial license, and operates on Windows and Mac operating systems. Installation of this application is described below, and detailed instructions on the use of RDataXMan are available in **"User Manual.pdf"**. Example datasets used in the user manual 
-are available from https://github.com/nyilin/RDataXMan_example_data.
+The RDataXMan package and the [R Commander plug-in](https://github.com/nyilin/RcmdrPlugin.RDataXMan) are free under an academic non-commercial license, and operates on Windows and Mac operating systems. Installation of this application is described below, and detailed instructions on the use of RDataXMan are available in **"User Manual.pdf"**. The simulated datasets used in the illustrative example described in the user manual are available from https://github.com/nyilin/RDataXMan_example_data.
 
 Installation
 ------------
